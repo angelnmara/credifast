@@ -14,4 +14,22 @@
     <string name="facebook_app_id">816247425194213</string>
     <string name="fb_login_protocol_scheme">fb816247425194213</string>
 
+    <!--facebook fin-->
+
+    <!--database-->
+
+    <string name="contentAutority">space.credifast.credifast.provider</string>
+    <string name="credifastDB">credifastDB</string>
+    <string name="entero"> INTEGER </string>
+    <string name="enteroc"> INTEGER, </string>
+    <string name="textc">TEXT COLLATE NOCASE,</string>
+    <string name="createTable">CREATE TABLE IF NOT EXISTS</string>
+    <string name="opcionNoValida">Opción no valida</string>
+    <string name="sinOrdenEspecial">Sin orden especial</string>
+    <string name="terminaSelect">Termina Select</string>
+    <string name="getTypeNoDefinido">getType no definido</string>
+    <string name="tablaNoExiste">Tabla no existe</string>
+
+    <!--database fin-->
+
 </resources>

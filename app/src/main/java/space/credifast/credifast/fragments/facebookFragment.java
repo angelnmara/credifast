@@ -96,9 +96,9 @@ public class facebookFragment extends Fragment {
             @Override
             public void onSuccess(LoginResult loginResult) {
                 cf.setAccessToken(loginResult.getAccessToken());
-                cf.setCampos("id, name");
+                cf.setCampos("id, name, email");
                 cf.getMe();
-                editText.setText(cf.getJsonObject().toString());
+                //editText.setText(cf.getJsonObject().toString());
             }
 
             @Override

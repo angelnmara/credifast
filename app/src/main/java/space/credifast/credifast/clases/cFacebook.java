@@ -1,6 +1,7 @@
 package space.credifast.credifast.clases;
 
 import android.os.Bundle;
+import android.util.Log;
 
 import com.facebook.AccessToken;
 import com.facebook.GraphRequest;
@@ -72,6 +73,7 @@ public class cFacebook implements iFacebook {
                     public void onCompleted(JSONObject object, GraphResponse response) {
                         jsonObject = object;
                         graphResponse = response;
+                        Log.d("salida", object.toString());
                     }
                 }
         );
