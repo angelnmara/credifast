@@ -33,11 +33,15 @@ public class credifastDatabase extends SQLiteOpenHelper implements iTables, iTbU
         db.beginTransaction();
         try{
             createTables(db);
-        }catch (Exception ex){}
+        }catch (Exception ex){
+            Log.e("error", ex.toString());
+        }
     }
 
     private static void createTables(SQLiteDatabase db) {
         final StringBuilder stringBuilder = new StringBuilder();
+
+        Log.i("information", "crea tabla tbusu");
         stringBuilder.append(context.getString(R.string.createTable))
                 .append(iTbUsu)
                 .append("(")
@@ -56,6 +60,27 @@ public class credifastDatabase extends SQLiteOpenHelper implements iTables, iTbU
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        Log.i("actualiza", "vieja: " + oldVersion + " nueva: " + newVersion);
+        db.beginTransaction();
+        try {
+            dropTables(db);
+            createTables(db);
+        }catch (Exception ex){
+            Log.e("error", ex.toString());
+        }
+    }
 
+    private static void dropTables(SQLiteDatabase db) {
+        try{
+            Log.i("informacion", "Entra a borrar tablas");
+            Log.i("information", "Borra tbUsu");
+            db.beginTransaction();
+            db.execSQL(context.getString(R.string.DropTable) + iTables.iTbUsu);
+            db.setTransactionSuccessful();
+            db.endTransaction();
+
+        }catch (Exception ex){
+            Log.e("Error", ex.toString());
+        }
     }
 }

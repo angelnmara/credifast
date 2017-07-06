@@ -16,7 +16,7 @@ public final class credifastContract {
 
     private static Context context;
 
-    public static final String CONTENT_AUTHORITY = context.getString(R.string.contentAutority);
+    public static final String CONTENT_AUTHORITY = "space.credifast.credifast.provider";
 
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
 

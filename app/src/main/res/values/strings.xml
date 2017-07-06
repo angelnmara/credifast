@@ -32,4 +32,10 @@
 
     <!--database fin-->
 
+    <!--dialog-->
+    <string name="ic_error_dialog">Error</string>
+    <string name="accept">Aceptar</string>
+    <string name="DropTable">DROP TABLE IF EXISTS</string>
+    <!--dialog-->
+
 </resources>

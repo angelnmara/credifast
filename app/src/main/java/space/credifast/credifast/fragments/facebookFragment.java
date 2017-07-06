@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -95,10 +96,10 @@ public class facebookFragment extends Fragment {
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
+                cf.setContext(getContext());
                 cf.setAccessToken(loginResult.getAccessToken());
                 cf.setCampos("id, name, email");
                 cf.getMe();
-                //editText.setText(cf.getJsonObject().toString());
             }
 
             @Override
