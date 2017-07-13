@@ -1,9 +1,12 @@
 package space.credifast.credifast.provider;
 
 import android.content.ContentProvider;
+import android.content.ContentProviderOperation;
+import android.content.ContentProviderResult;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.OperationApplicationException;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -13,15 +16,14 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import java.util.ArrayList;
+
 import space.credifast.credifast.R;
 import space.credifast.credifast.interfaces.iTbUsuColumns;
-
-import static space.credifast.credifast.interfaces.iTables.iTbUsu;
+import static space.credifast.credifast.interfaces.iTables.tbUsu;
 import static space.credifast.credifast.provider.credifastContract.CONTENT_AUTHORITY;
 import static space.credifast.credifast.provider.credifastContract.PATH_USER;
 import static space.credifast.credifast.provider.credifastContract.cTbUsu;
-
-import space.credifast.credifast.provider.credifastContract;
 
 /**
  * Created by angel on 24/06/2017.
@@ -50,9 +52,29 @@ public class credifastProvider extends ContentProvider {
 
     @Override
     public boolean onCreate() {
+        Log.d("on create", "provider create");
         context = getContext();
         mOpenHelper = new credifastDatabase(context);
         return true;
+    }
+
+    @Override
+    public ContentProviderResult[] applyBatch(ArrayList<ContentProviderOperation> operations){
+        final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
+        db.beginTransaction();
+        final int numOperaciones = operations.size();
+        final ContentProviderResult[] results = new ContentProviderResult[numOperaciones];
+        try{
+            for(int i=0; i<numOperaciones; i++){
+                results[i] = operations.get(i).apply(this, results, i);
+            }
+            db.setTransactionSuccessful();
+        } catch (OperationApplicationException e) {
+            Log.e("error", e.toString());
+            e.printStackTrace();
+            db.endTransaction();
+        }
+        return results;
     }
 
     @Nullable
@@ -68,7 +90,7 @@ public class credifastProvider extends ContentProvider {
                 queryBuilder.appendWhere(iTbUsuColumns.fcUsu + " = " + Id);
 
             case CODE_ALL_USU:
-                queryBuilder.setTables(iTbUsu);
+                queryBuilder.setTables(tbUsu);
                 break;
 
             default:
@@ -119,7 +141,7 @@ public class credifastProvider extends ContentProvider {
 
         switch (match){
             case CODE_ALL_USU:
-                rowId = db.insert(iTbUsu, null, values);
+                rowId = db.insert(tbUsu, null, values);
                 newUri = ContentUris.withAppendedId(cTbUsu.CONTENT_URI, rowId);
                 break;
             default:
@@ -140,10 +162,10 @@ public class credifastProvider extends ContentProvider {
         switch (match){
             case CODE_SINGLE_USU:
                 id = cTbUsu.getUsuId(uri);
-                deleteRows = db.delete(iTbUsu, iTbUsuColumns.fiIdUsu + "=?", new String[]{id});
+                deleteRows = db.delete(tbUsu, iTbUsuColumns.fiIdUsu + "=?", new String[]{id});
                 break;
             case CODE_ALL_USU:
-                deleteRows = db.delete(iTbUsu, selection, selectionArgs);
+                deleteRows = db.delete(tbUsu, selection, selectionArgs);
                 break;
             default:
                 Log.d(TAG, context.getString(R.string.tablaNoExiste));
@@ -162,10 +184,10 @@ public class credifastProvider extends ContentProvider {
         switch (match){
             case CODE_SINGLE_USU:
                 id = cTbUsu.getUsuId(uri);
-                updateRow = db.update(iTbUsu, values, iTbUsuColumns.fiIdUsu + "=?", new String[]{id});
+                updateRow = db.update(tbUsu, values, iTbUsuColumns.fiIdUsu + "=?", new String[]{id});
                 break;
             case CODE_ALL_USU:
-                updateRow = db.update(iTbUsu, values, selection, selectionArgs);
+                updateRow = db.update(tbUsu, values, selection, selectionArgs);
                 break;
             default:
                 Log.d(TAG, context.getString(R.string.tablaNoExiste));
