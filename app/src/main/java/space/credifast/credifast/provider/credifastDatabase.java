@@ -15,11 +15,11 @@ import space.credifast.credifast.interfaces.iTbUsuColumns;
 
 public class credifastDatabase extends SQLiteOpenHelper implements iTables, iTbUsuColumns {
     
-    private static Context context;
+    public static Context context;
     
     public static final String TAG = "credifastDatabase";
     
-    public static final String DATABASE_NAME = context.getString(R.string.credifastDB);
+    public static final String DATABASE_NAME = "credifastDB";
 
     public static final int DATABASE_VERSION = 1;
 
@@ -33,8 +33,24 @@ public class credifastDatabase extends SQLiteOpenHelper implements iTables, iTbU
         db.beginTransaction();
         try{
             createTables(db);
+            db.setTransactionSuccessful();
         }catch (Exception ex){
             Log.e("error", ex.toString());
+            db.endTransaction();
+        }
+    }
+
+    @Override
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        Log.i("actualiza", "vieja: " + oldVersion + " nueva: " + newVersion);
+        db.beginTransaction();
+        try {
+            dropTables(db);
+            createTables(db);
+            db.setTransactionSuccessful();
+        }catch (Exception ex){
+            Log.e("error", ex.toString());
+            db.endTransaction();
         }
     }
 
@@ -43,7 +59,7 @@ public class credifastDatabase extends SQLiteOpenHelper implements iTables, iTbU
 
         Log.i("information", "crea tabla tbusu");
         stringBuilder.append(context.getString(R.string.createTable))
-                .append(iTbUsu)
+                .append(tbUsu)
                 .append("(")
                 .append(fiIdUsu)
                 .append(context.getString(R.string.enteroc))
@@ -58,24 +74,12 @@ public class credifastDatabase extends SQLiteOpenHelper implements iTables, iTbU
         stringBuilder.setLength(0);
     }
 
-    @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        Log.i("actualiza", "vieja: " + oldVersion + " nueva: " + newVersion);
-        db.beginTransaction();
-        try {
-            dropTables(db);
-            createTables(db);
-        }catch (Exception ex){
-            Log.e("error", ex.toString());
-        }
-    }
-
     private static void dropTables(SQLiteDatabase db) {
         try{
             Log.i("informacion", "Entra a borrar tablas");
             Log.i("information", "Borra tbUsu");
             db.beginTransaction();
-            db.execSQL(context.getString(R.string.DropTable) + iTables.iTbUsu);
+            db.execSQL(context.getString(R.string.DropTable) + iTables.tbUsu);
             db.setTransactionSuccessful();
             db.endTransaction();
 
