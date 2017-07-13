@@ -9,5 +9,5 @@ import space.credifast.credifast.R;
  */
 
 public interface iTables {
-    static final String iTbUsu = "iTbUsu";
+    public static final String tbUsu = "tbUsu";
 }
