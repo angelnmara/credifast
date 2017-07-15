@@ -16,7 +16,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import space.credifast.credifast.fragments.facebookFragment;
-import space.credifast.credifast.fragments.principalFragment;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, facebookFragment.OnFragmentInteractionListener {
@@ -47,9 +46,6 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
-        principalFragment pf = principalFragment.newInstance("", "");
-        fm.beginTransaction().replace(R.id.lnlPrincipal, pf, "principalFragment").addToBackStack("principalFragment").commit();
     }
 
     @Override

@@ -6,55 +6,81 @@ import android.content.ContentProviderResult;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.OperationApplicationException;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+//import space.credifast.credifast.provider.crediFastContract.ArticleColumns;
+import space.credifast.credifast.interfaces.iArticleColumns;
+import space.credifast.credifast.provider.crediFastContract.MarcaColumns;
+import space.credifast.credifast.provider.crediFastContract.UserColumns;
+import space.credifast.credifast.provider.crediFastContract.VentaColumns;
+import space.credifast.credifast.provider.crediFastContract.VentaMarcaColumns;
+import space.credifast.credifast.provider.crediFastContract.article;
+import space.credifast.credifast.provider.crediFastContract.marca;
+import space.credifast.credifast.provider.crediFastContract.user;
+import space.credifast.credifast.provider.crediFastContract.venta;
+import space.credifast.credifast.provider.crediFastContract.venta_marca;
+import space.credifast.credifast.provider.crediFastDatabase.Tables;
+
 import java.util.ArrayList;
 
-import space.credifast.credifast.R;
-import space.credifast.credifast.interfaces.iTbUsuColumns;
-import static space.credifast.credifast.interfaces.iTables.tbUsu;
-import static space.credifast.credifast.provider.credifastContract.CONTENT_AUTHORITY;
-import static space.credifast.credifast.provider.credifastContract.PATH_USER;
-import static space.credifast.credifast.provider.credifastContract.cTbUsu;
-
 /**
- * Created by angel on 24/06/2017.
+ * Created by Qualtop on 05/09/2016.
  */
+public class crediFastProvider extends ContentProvider {
 
-public class credifastProvider extends ContentProvider {
+    private static final String TAG = "crediFastProvider";
 
-    public static final String TAG = "credifastProvider";
+    private static final int CODE_ALL_USERS = 1;
+    private static final int CODE_SINGLE_USER = 2;
 
-    private static final int CODE_ALL_USU = 1;
-    private static final int CODE_SINGLE_USU = 2;
+    private static final int CODE_ALL_ARTICLES = 3;
+    private static final int CODE_SINGLE_ARTICLE = 4;
+
+    private static final int CODE_ALL_VENTA = 5;
+    private static final int CODE_SINGLE_VENTA = 6;
+
+    private static final int CODE_ALL_MARCA = 7;
+    private static final int CODE_SINGLE_MARCA = 8;
+
+    private static final int CODE_ALL_VENTA_MARCA = 9;
+    private static final int CODE_SINGLE_VENTA_MARCA = 10;
 
     private Context context;
-    public static credifastDatabase mOpenHelper;
+    private static crediFastDatabase mOpenHelper;
     private static final UriMatcher sUri = buildUriMatcher();
 
     private static UriMatcher buildUriMatcher() {
-        final String authority = CONTENT_AUTHORITY;
+        final String authority = crediFastContract.CONTENT_AUTHORITY;
         final UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
 
-        matcher.addURI(authority, PATH_USER, CODE_ALL_USU);
-        matcher.addURI(authority, PATH_USER + "/#", CODE_SINGLE_USU);
+        matcher.addURI(authority, crediFastContract.PATH_USER, CODE_ALL_USERS);
+        matcher.addURI(authority, crediFastContract.PATH_USER + "/#", CODE_SINGLE_USER);
+
+        matcher.addURI(authority, crediFastContract.PATH_ARTICLE, CODE_ALL_ARTICLES);
+        matcher.addURI(authority, crediFastContract.PATH_ARTICLE + "/#", CODE_SINGLE_ARTICLE);
+
+        matcher.addURI(authority, crediFastContract.PATH_VENTA, CODE_ALL_VENTA);
+        matcher.addURI(authority, crediFastContract.PATH_VENTA + "/#", CODE_SINGLE_VENTA);
+
+        matcher.addURI(authority, crediFastContract.PATH_MARCA, CODE_ALL_MARCA);
+        matcher.addURI(authority, crediFastContract.PATH_MARCA + "/#", CODE_SINGLE_MARCA);
+
+        matcher.addURI(authority, crediFastContract.PATH_VENTA_MARCA, CODE_ALL_VENTA_MARCA);
+        matcher.addURI(authority, crediFastContract.PATH_VENTA_MARCA + "/#", CODE_SINGLE_VENTA_MARCA);
 
         return matcher;
     }
 
     @Override
     public boolean onCreate() {
-        Log.d("on create", "provider create");
         context = getContext();
-        mOpenHelper = new credifastDatabase(context);
+        mOpenHelper = new crediFastDatabase(context);
         return true;
     }
 
@@ -62,16 +88,15 @@ public class credifastProvider extends ContentProvider {
     public ContentProviderResult[] applyBatch(ArrayList<ContentProviderOperation> operations){
         final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         db.beginTransaction();
-        final int numOperaciones = operations.size();
-        final ContentProviderResult[] results = new ContentProviderResult[numOperaciones];
-        try{
-            for(int i=0; i<numOperaciones; i++){
+        final int numOperations = operations.size();
+        final ContentProviderResult[] results = new ContentProviderResult[numOperations];
+        try {
+            for(int i = 0; i < numOperations; i++){
                 results[i] = operations.get(i).apply(this, results, i);
             }
             db.setTransactionSuccessful();
-        } catch (OperationApplicationException e) {
-            Log.e("error", e.toString());
-            e.printStackTrace();
+        }catch (Exception ex){
+            Log.d(TAG, "Error ContentPrpviderResult");
             db.endTransaction();
         }
         return results;
@@ -79,73 +104,162 @@ public class credifastProvider extends ContentProvider {
 
     @Nullable
     @Override
-    public Cursor query(@NonNull Uri uri, @Nullable String[] projection, @Nullable String selection, @Nullable String[] selectionArgs, @Nullable String sortOrder) {
+    public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
         final String Id;
         final SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
         final int match = sUri.match(uri);
 
         switch (match){
-            case CODE_SINGLE_USU:
-                Id = credifastContract.cTbUsu.getUsuId(uri);
-                queryBuilder.appendWhere(iTbUsuColumns.fcUsu + " = " + Id);
+            case CODE_SINGLE_USER:
+                Id = user.getUserId(uri);
+                queryBuilder.appendWhere(UserColumns._ID + " = " + Id);
 
-            case CODE_ALL_USU:
-                queryBuilder.setTables(tbUsu);
+            case CODE_ALL_USERS:
+                queryBuilder.setTables(Tables.USER);
+                break;
+
+            case CODE_SINGLE_ARTICLE:
+                Id = article.getArticleId(uri);
+                queryBuilder.appendWhere(iArticleColumns._ID + " = " + Id);
+
+            case CODE_ALL_ARTICLES:
+                queryBuilder.setTables(Tables.ARTICLE);
+                break;
+
+            case CODE_SINGLE_VENTA:
+                Id = venta.getVentaId(uri);
+                queryBuilder.appendWhere(VentaColumns._ID + "=" + Id);
+                break;
+
+            case CODE_ALL_VENTA:
+                queryBuilder.setTables(Tables.VENTA);
+                break;
+
+            case CODE_SINGLE_MARCA:
+                Id = marca.getMarcaId(uri);
+                queryBuilder.appendWhere(MarcaColumns._ID + "=" + Id);
+                break;
+
+            case CODE_ALL_MARCA:
+                queryBuilder.setTables(Tables.MARCA);
+                break;
+
+            case CODE_ALL_VENTA_MARCA:
+                queryBuilder.setTables("venta inner join marca on venta.venta_marca_id = marca._id");
+                break;
+
+            case CODE_SINGLE_VENTA_MARCA:
+                Id = venta_marca.getMarcaId(uri);
+                queryBuilder.appendWhere(VentaMarcaColumns._ID + "=" + Id);
                 break;
 
             default:
-                Log.d(TAG, context.getString(R.string.opcionNoValida));
+                Log.d(TAG, "Opcion no valida");
         }
 
         if (sortOrder == null){
+
             switch (match){
-                case CODE_ALL_USU:
-                    sortOrder = cTbUsu.DEFAULT_SORT;
+                case CODE_ALL_USERS:
+                    sortOrder = user.DEFAULT_SORT;
                     break;
-                default:
-                    Log.d(TAG, context.getString(R.string.sinOrdenEspecial));
+
+                case CODE_ALL_ARTICLES:
+                    sortOrder = article.DEFAULT_SORT;
+                    break;
+
+                case CODE_ALL_VENTA:
+                    sortOrder = venta.DEFAULT_SORT;
+                    break;
+
+                case CODE_ALL_MARCA:
+                    sortOrder = marca.DEFAULT_SORT;
+                    break;
+
+                case CODE_ALL_VENTA_MARCA:
+                    sortOrder = marca.DEFAULT_SORT;
+                    break;
             }
+
         }else{
-            Log.d(TAG, context.getString(R.string.sinOrdenEspecial));
+            Log.d(TAG, "Sin orden registrado");
         }
 
         final SQLiteDatabase db = mOpenHelper.getReadableDatabase();
         final Cursor cursor = queryBuilder.query(db, projection, selection, selectionArgs, null, null, sortOrder, null);
         cursor.setNotificationUri(getContext().getContentResolver(), uri);
-        Log.d(TAG, context.getString(R.string.terminaSelect));
+        Log.d(TAG, "Termina el select");
         return cursor;
     }
 
     @Nullable
     @Override
-    public String getType(@NonNull Uri uri) {
+    public String getType(Uri uri) {
         final int match = sUri.match(uri);
         switch (match){
-            case CODE_ALL_USU:
-                return cTbUsu.CONTENT_TYPE;
-            case CODE_SINGLE_USU:
-                return cTbUsu.CONTENT_ITEM_TYPE;
+            case CODE_ALL_USERS:
+                return user.CONTENT_TYPE;
+
+            case CODE_SINGLE_USER:
+                return user.CONTENT_ITEM_TYPE;
+
+            case CODE_ALL_ARTICLES:
+                return article.CONTENT_TYPE;
+
+            case CODE_SINGLE_ARTICLE:
+                return article.CONTENT_ITEM_TYPE;
+
+            case CODE_ALL_VENTA:
+                return venta.CONTENT_TYPE;
+
+            case CODE_SINGLE_VENTA:
+                return venta.CONTENT_ITEM_TYPE;
+
+            case CODE_ALL_MARCA:
+                return marca.CONTENT_TYPE;
+
+            case CODE_SINGLE_MARCA:
+                return marca.CONTENT_ITEM_TYPE;
+
             default:
-                Log.d(TAG, context.getString(R.string.getTypeNoDefinido));
+                Log.d(TAG, "getType no definido");
         }
         return null;
     }
 
     @Nullable
     @Override
-    public Uri insert(@NonNull Uri uri, @Nullable ContentValues values) {
+    public Uri insert(Uri uri, ContentValues values) {
         final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         Uri newUri = null;
         long rowId;
         final int match = sUri.match(uri);
 
         switch (match){
-            case CODE_ALL_USU:
-                rowId = db.insert(tbUsu, null, values);
-                newUri = ContentUris.withAppendedId(cTbUsu.CONTENT_URI, rowId);
+            case CODE_ALL_USERS:
+                //crediFastDatabase.dropTables(db);
+                rowId = db.insert(Tables.USER, null, values);
+                newUri = ContentUris.withAppendedId(user.CONTENT_URI, rowId);
                 break;
+
+            case CODE_ALL_ARTICLES:
+                rowId = db.insert(Tables.ARTICLE, null, values);
+                newUri = ContentUris.withAppendedId(article.CONTENT_URI, rowId);
+                break;
+
+            case CODE_ALL_VENTA:
+                rowId = db.insert(Tables.VENTA, null, values);
+                newUri = ContentUris.withAppendedId(venta.CONTENT_URI, rowId);
+                break;
+
+            case CODE_ALL_MARCA:
+                rowId = db.insert(Tables.MARCA, null, values);
+                newUri = ContentUris.withAppendedId(marca.CONTENT_URI, rowId);
+                break;
+
             default:
-                Log.d(TAG, context.getString(R.string.tablaNoExiste));
+                Log.d(TAG, "Tabla no existe");
+                break;
         }
 
         getContext().getContentResolver().notifyChange(uri, null, false);
@@ -154,51 +268,109 @@ public class credifastProvider extends ContentProvider {
     }
 
     @Override
-    public int delete(@NonNull Uri uri, @Nullable String selection, @Nullable String[] selectionArgs) {
+    public int delete(Uri uri, String selection, String[] selectionArgs) {
         final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         final int match = sUri.match(uri);
         int deleteRows = 0;
         final String id;
+
         switch (match){
-            case CODE_SINGLE_USU:
-                id = cTbUsu.getUsuId(uri);
-                deleteRows = db.delete(tbUsu, iTbUsuColumns.fiIdUsu + "=?", new String[]{id});
+            case CODE_SINGLE_USER:
+                id = user.getUserId(uri);
+                deleteRows = db.delete(Tables.USER, UserColumns._ID + "=?", new String[]{id});
                 break;
-            case CODE_ALL_USU:
-                deleteRows = db.delete(tbUsu, selection, selectionArgs);
+
+            case CODE_ALL_USERS:
+                deleteRows = db.delete(Tables.USER, selection, selectionArgs);
                 break;
+
+            case CODE_SINGLE_ARTICLE:
+                id = article.getArticleId(uri);
+                deleteRows = db.delete(Tables.ARTICLE, iArticleColumns._ID + "=?", new String[]{id});
+                break;
+
+            case CODE_ALL_ARTICLES:
+                deleteRows = db.delete(Tables.ARTICLE, selection, selectionArgs);
+                break;
+
+            case CODE_SINGLE_VENTA:
+                id = venta.getVentaId(uri);
+                deleteRows = db.delete(Tables.VENTA, VentaColumns._ID + "=?", new String[]{id});
+                break;
+
+            case CODE_ALL_VENTA:
+                deleteRows = db.delete(Tables.VENTA, selection, selectionArgs);
+                break;
+
+            case CODE_SINGLE_MARCA:
+                id = marca.getMarcaId(uri);
+                deleteRows = db.delete(Tables.MARCA, MarcaColumns._ID + "=?", new String[]{id});
+                break;
+
+            case CODE_ALL_MARCA:
+                deleteRows = db.delete(Tables.MARCA, selection, selectionArgs);
+                break;
+
             default:
-                Log.d(TAG, context.getString(R.string.tablaNoExiste));
+                Log.d(TAG, "No existe tabla para borrar");
+                break;
         }
+
         getContext().getContentResolver().notifyChange(uri, null, false);
 
         return deleteRows;
     }
 
     @Override
-    public int update(@NonNull Uri uri, @Nullable ContentValues values, @Nullable String selection, @Nullable String[] selectionArgs) {
+    public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
         SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         final int match = sUri.match(uri);
         final String id;
-        int updateRow = 0;
-        switch (match){
-            case CODE_SINGLE_USU:
-                id = cTbUsu.getUsuId(uri);
-                updateRow = db.update(tbUsu, values, iTbUsuColumns.fiIdUsu + "=?", new String[]{id});
-                break;
-            case CODE_ALL_USU:
-                updateRow = db.update(tbUsu, values, selection, selectionArgs);
-                break;
-            default:
-                Log.d(TAG, context.getString(R.string.tablaNoExiste));
-        }
-        getContext().getContentResolver().notifyChange(uri, null, false);
-        return updateRow;
-    }
+        int updateRows = 0;
 
-    @Nullable
-    @Override
-    public String[] getStreamTypes(@NonNull Uri uri, @NonNull String mimeTypeFilter) {
-        return super.getStreamTypes(uri, mimeTypeFilter);
+        switch (match){
+            case CODE_SINGLE_USER:
+                id = user.getUserId(uri);
+                updateRows = db.update(Tables.USER, values, UserColumns._ID + "=?", new String[]{id});
+                break;
+
+            case CODE_ALL_USERS:
+                updateRows = db.update(Tables.USER, values, selection, selectionArgs);
+                break;
+
+            case CODE_SINGLE_ARTICLE:
+                id = article.getArticleId(uri);
+                updateRows = db.update(Tables.ARTICLE, values, iArticleColumns._ID + "=?", new String[]{id});
+                break;
+
+            case CODE_ALL_ARTICLES:
+                updateRows = db.update(Tables.ARTICLE, values, selection, selectionArgs);
+                break;
+
+            case CODE_SINGLE_VENTA:
+                id = venta.getVentaId(uri);
+                updateRows = db.update(Tables.VENTA, values, VentaColumns._ID + "=?", new String[]{id});
+                break;
+
+            case CODE_ALL_VENTA:
+                updateRows = db.update(Tables.VENTA, values, selection, selectionArgs);
+                break;
+
+            case CODE_SINGLE_MARCA:
+                id = marca.getMarcaId(uri);
+                updateRows = db.update(Tables.MARCA, values, MarcaColumns._ID + "=?", new String[]{id});
+                break;
+
+            case CODE_ALL_MARCA:
+                updateRows = db.update(Tables.MARCA, values, selection, selectionArgs);
+                break;
+
+            default:
+                Log.d(TAG, "update no registrado");
+        }
+
+        getContext().getContentResolver().notifyChange(uri, null, false);
+
+        return updateRows;
     }
 }

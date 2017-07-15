@@ -17,6 +17,7 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+    <!--estilos dialog-->
     <style name="dialog_animation">
         <item name="android:windowEnterAnimation">@anim/bounce</item>
         <item name="android:windowExitAnimation">@anim/top_out</item>

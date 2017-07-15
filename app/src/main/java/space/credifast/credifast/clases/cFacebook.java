@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 
 import com.facebook.AccessToken;
 import com.facebook.GraphRequest;
@@ -15,13 +14,10 @@ import com.facebook.GraphResponse;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import space.credifast.credifast.dialogs.genericDilog;
 import space.credifast.credifast.interfaces.iFacebook;
-import space.credifast.credifast.interfaces.iTbUsuColumns;
-import space.credifast.credifast.provider.credifastContract;
-import space.credifast.credifast.provider.credifastContract.cTbUsu;
-import space.credifast.credifast.dialog.genericDilog;
-
-import static com.facebook.AccessToken.getCurrentAccessToken;
+import space.credifast.credifast.provider.crediFastContract;
+import space.credifast.credifast.interfaces.iArticleColumns;
 
 /**
  * Created by angel on 23/06/2017.
@@ -95,21 +91,21 @@ public class cFacebook implements iFacebook {
                         //Log.d("Error", response.getError().toString());
                         final ContentResolver contentResolver = getContext().getContentResolver();
                         final ContentValues contentValues = new ContentValues();
-                        try {
-                            contentValues.put(iTbUsuColumns.fnStatUsu, true);
-                            contentValues.put(iTbUsuColumns.fiIdUsu, object.getInt("id"));
-                            contentValues.put(iTbUsuColumns.fcCorreoElectronico, object.getString("email"));
-                            contentValues.put(iTbUsuColumns.fcUsu, object.getString("name"));
+                        contentValues.put(iArticleColumns.ARTICLE_CODE, 1);
+                        contentValues.put(iArticleColumns.ARTICLE_DESC, "Descripcion");
+                        contentValues.put(iArticleColumns.ARTICLE_MARCA_ID, "Marca");
+                        contentValues.put(iArticleColumns.ARTICLE_NAME, "Nombre");
+                        contentValues.put(iArticleColumns.ARTICLE_PRECIO, 18.1);
+                        contentValues.put(iArticleColumns.ARTICLE_COSTO, 18.1);
+                        contentValues.put(iArticleColumns.ARTICLE_STOCK, 3);
+                        //contentValues.put(crediFastContract.iArticleColumns.ARTICLE_FOTO, ImgProductoByte);
 
-                            final Uri uri = contentResolver.insert(cTbUsu.CONTENT_URI, contentValues);
-                            Intent i = new Intent(getContext(), genericDilog.class);
-                            String id = credifastContract.cTbUsu.getUsuId(uri).toString();
-                            i.putExtra("message", "Se inserto correctamente " + id);
-                            //startActivity(i);
+                        final Uri uri = contentResolver.insert(crediFastContract.article.CONTENT_URI, contentValues);
+                        Intent i = new Intent(getContext(), genericDilog.class);
+                        String id = crediFastContract.article.getArticleId(uri).toString();
+                        i.putExtra("message", "Se inserto correctamente " + id);
+                        //startActivity(i);
 
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
                     }
                 }
         );
