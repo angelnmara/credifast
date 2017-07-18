@@ -41,7 +41,7 @@ public class cCampos {
             case "blob":
                 strBuilderCampos.append("BLOB");
                 break;
-            case "datetime":
+            case "date":
                 strBuilderCampos.append("NUMERIC");
                 break;
             default:

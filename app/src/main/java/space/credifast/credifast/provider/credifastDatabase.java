@@ -13,9 +13,8 @@ import space.credifast.credifast.clases.cTablas;
 import space.credifast.credifast.interfaces.iArticleColumns;
 import space.credifast.credifast.interfaces.iMarcaColumns;
 import space.credifast.credifast.interfaces.iTablas;
-import space.credifast.credifast.provider.crediFastContract.TipoDato;
-import space.credifast.credifast.provider.crediFastContract.UserColumns;
-import space.credifast.credifast.provider.crediFastContract.VentaColumns;
+import space.credifast.credifast.interfaces.iUserColumns;
+import space.credifast.credifast.interfaces.iVentaColumns;
 
 /**
  * Created by Qualtop on 02/09/2016.
@@ -26,7 +25,7 @@ public class crediFastDatabase extends SQLiteOpenHelper {
 
     public static final String DATABASE_NAME = "crediFastDB";
 
-    private static final int DATABASE_VERSION = 4;
+    private static final int DATABASE_VERSION = 6;
 
     public crediFastDatabase(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -64,25 +63,21 @@ public class crediFastDatabase extends SQLiteOpenHelper {
             Log.d(TAG, "Elimina");
 
             db.beginTransaction();
-            //db.delete(Tables.USER, null, null);
             db.execSQL("DROP TABLE IF EXISTS " + iTablas.USER);
             db.setTransactionSuccessful();
             db.endTransaction();
 
             db.beginTransaction();
-            //db.delete(Tables.ARTICLE, null, null);
             db.execSQL("DROP TABLE IF EXISTS " + iTablas.ARTICLE);
             db.setTransactionSuccessful();
             db.endTransaction();
 
             db.beginTransaction();
-            //db.delete(Tables.ARTICLE, null, null);
             db.execSQL("DROP TABLE IF EXISTS " + iTablas.VENTA);
             db.setTransactionSuccessful();
             db.endTransaction();
 
             db.beginTransaction();
-            //db.delete(Tables.ARTICLE, null, null);
             db.execSQL("DROP TABLE IF EXISTS " + iTablas.MARCA);
             db.setTransactionSuccessful();
             db.endTransaction();
@@ -95,37 +90,37 @@ public class crediFastDatabase extends SQLiteOpenHelper {
     private static void createTables(SQLiteDatabase db){
 
         final StringBuilder strBuilder = new StringBuilder();
-        strBuilder.append("CREATE TABLE IF NOT EXISTS ").append(iTablas.USER)
-                .append("(").append(UserColumns._ID)
-                .append(" INTEGER PRIMARY KEY AUTOINCREMENT,")
-                .append(UserColumns.MEMBER_NUMBER).append(" INTEGER,")
-                .append(UserColumns.NAME).append(" TEXT COLLATE NOCASE,")
-                .append(UserColumns.AGE).append(" INTEGER,")
-                .append(UserColumns.USER).append(" TEXT COLLATE NOCASE,")
-                .append(UserColumns.GENDER_ID).append(" INTEGER,")
-                .append(UserColumns.GENDER).append(" TEXT COLLATE NOCASE,")
-                .append(UserColumns.HEIGHT).append(" REAL,")
-                .append(UserColumns.WEIGHT).append(" REAL,")
-                .append(UserColumns.REGISTRATION_DATE).append(" INTEGER,")
-                .append(UserColumns.BIRTH_DATE).append(" INTEGER,")
-                .append(UserColumns.MEMBER_TYPE)
-                .append(" TEXT COLLATE NOCASE,")
-                .append(" TEXT COLLATE NOCASE,").append(UserColumns.EMAIL)
-                .append(" TEXT COLLATE NOCASE,")
-                .append(UserColumns.USER_FB_ID).append(" TEXT COLLATE NOCASE,")
-                .append(UserColumns.USER_FB_FIRST_NAME).append(" TEXT COLLATE NOCASE,")
-                .append(UserColumns.USER_FB_LAST_NAME).append(" TEXT COLLATE NOCASE,")
-                .append(UserColumns.USER_FB_BIRTHDAY).append(" TEXT COLLATE NOCASE,")
-                .append(UserColumns.USER_FB_EMAIL).append(" TEXT COLLATE NOCASE,")
-                .append(UserColumns.USER_FB_GENDER).append(" TEXT COLLATE NOCASE,")
-                .append(UserColumns.USER_FB_LOCALE).append(" TEXT COLLATE NOCASE,")
-                .append(UserColumns.LATITUD).append(" REAL,")
-                .append(UserColumns.LONGITUD).append(" REAL)");
-
-        db.execSQL(strBuilder.toString());
-        strBuilder.setLength(0);
 
         List<cCampos> lcCampos = new ArrayList<>();
+
+        lcCampos.add(new cCampos(iUserColumns._ID, true, "int"));
+        lcCampos.add(new cCampos(iUserColumns.MEMBER_NUMBER, false, "int"));
+        lcCampos.add(new cCampos(iUserColumns.NAME, false, "string"));
+        lcCampos.add(new cCampos(iUserColumns.AGE, false, "int"));
+        lcCampos.add(new cCampos(iUserColumns.USER, false, "string"));
+        lcCampos.add(new cCampos(iUserColumns.GENDER_ID, false, "int"));
+        lcCampos.add(new cCampos(iUserColumns.GENDER, false, "string"));
+        lcCampos.add(new cCampos(iUserColumns.HEIGHT, false, "decimal"));
+        lcCampos.add(new cCampos(iUserColumns.WEIGHT, false, "decimal"));
+        lcCampos.add(new cCampos(iUserColumns.REGISTRATION_DATE, false, "date"));
+        lcCampos.add(new cCampos(iUserColumns.BIRTH_DATE, false, "date"));
+        lcCampos.add(new cCampos(iUserColumns.MEMBER_TYPE, false, "string"));
+        lcCampos.add(new cCampos(iUserColumns.EMAIL, false, "string"));
+        lcCampos.add(new cCampos(iUserColumns.USER_FB_ID, false, "string"));
+        lcCampos.add(new cCampos(iUserColumns.USER_FB_FIRST_NAME, false, "string"));
+        lcCampos.add(new cCampos(iUserColumns.USER_FB_LAST_NAME, false, "string"));
+        lcCampos.add(new cCampos(iUserColumns.USER_FB_BIRTHDAY, false, "date"));
+        lcCampos.add(new cCampos(iUserColumns.USER_FB_EMAIL, false, "string"));
+        lcCampos.add(new cCampos(iUserColumns.USER_FB_GENDER, false, "string"));
+        lcCampos.add(new cCampos(iUserColumns.USER_FB_LOCALE, false, "string"));
+        lcCampos.add(new cCampos(iUserColumns.LATITUD, false, "decimal"));
+        lcCampos.add(new cCampos(iUserColumns.LONGITUD, false, "decimal"));
+
+        cTablas ct = new cTablas(iTablas.USER, lcCampos);
+        ct.queryCreaTabla();
+        db.execSQL(ct.getStrBuilderTabla().toString());
+
+        lcCampos = new ArrayList<>();
 
         lcCampos.add(new cCampos(iArticleColumns._ID, true, "int"));
         lcCampos.add(new cCampos(iArticleColumns.ARTICLE_CODE, false, "string"));
@@ -137,14 +132,14 @@ public class crediFastDatabase extends SQLiteOpenHelper {
         lcCampos.add(new cCampos(iArticleColumns.ARTICLE_FOTO, false, "blob"));
         lcCampos.add(new cCampos(iArticleColumns.ARTICLE_STOCK, false, "int"));
 
-        cTablas ct = new cTablas(iTablas.ARTICLE, lcCampos);
+        ct = new cTablas(iTablas.ARTICLE, lcCampos);
         ct.queryCreaTabla();
         db.execSQL(ct.getStrBuilderTabla().toString());
 
         lcCampos = new ArrayList<>();
 
         lcCampos.add(new cCampos(iMarcaColumns._ID, true, "int"));
-        lcCampos.add(new cCampos(iMarcaColumns.MARCA_CODE, false, "int"));
+        lcCampos.add(new cCampos(iMarcaColumns.MARCA_CODE, false, "string"));
         lcCampos.add(new cCampos(iMarcaColumns.MARCA_NAME, false, "string"));
         lcCampos.add(new cCampos(iMarcaColumns.MARCA_DESC, false, "string"));
         lcCampos.add(new cCampos(iMarcaColumns.MARCA_IMAGEN, false, "blob"));
@@ -155,60 +150,25 @@ public class crediFastDatabase extends SQLiteOpenHelper {
         ct.queryCreaTabla();
         db.execSQL(ct.getStrBuilderTabla().toString());
 
-        /*strBuilder.append(TipoDato.CREATE_TABLE)
-                .append(iTablas.MARCA)
-                .append("(")
-                .append(MarcaColumns._ID)
-                .append(TipoDato.INT_KEY)
-                .append(MarcaColumns.MARCA_CODE)
-                .append(TipoDato.TEXT_)
-                .append(MarcaColumns.MARCA_IMAGEN)
-                .append(TipoDato.BLOB_)
-                .append(MarcaColumns.MARCA_NAME)
-                .append(TipoDato.TEXT_)
-                .append(MarcaColumns.MARCA_OTRO1)
-                .append(TipoDato.TEXT_)
-                .append(MarcaColumns.MARCA_OTRO2)
-                .append(TipoDato.TEXT)
-                .append(")");
+        lcCampos = new ArrayList<>();
 
-        db.execSQL(strBuilder.toString());
-        strBuilder.setLength(0);*/
+        lcCampos.add(new cCampos(iVentaColumns._ID, true, "int"));
+        lcCampos.add(new cCampos(iVentaColumns.VENTA_CODE, false, "string"));
+        lcCampos.add(new cCampos(iVentaColumns.VENTA_NAME, false, "string"));
+        lcCampos.add(new cCampos(iVentaColumns.VENTA_DESC, false, "string"));
+        lcCampos.add(new cCampos(iVentaColumns.VENTA_MARCA_ID, false, "int"));
+        lcCampos.add(new cCampos(iVentaColumns.VENTA_PRECIO, false, "decimal"));
+        lcCampos.add(new cCampos(iVentaColumns.VENTA_FOTO, false, "blob"));
 
-        strBuilder.append(TipoDato.CREATE_TABLE)
-                .append(iTablas.VENTA)
-                .append("(")
-                .append(VentaColumns._ID)
-                .append(TipoDato.INT_KEY)
-                .append(VentaColumns.VENTA_CODE)
-                .append(TipoDato.TEXT_)
-                .append(VentaColumns.VENTA_NAME)
-                .append(TipoDato.TEXT_)
-                .append(VentaColumns.VENTA_DESC)
-                .append(TipoDato.TEXT_)
-                .append(VentaColumns.VENTA_MARCA_ID)
-                .append(TipoDato.INT_)
-                .append(VentaColumns.VENTA_PRECIO)
-                .append(TipoDato.DOUBLE_)
-                .append(VentaColumns.VENTA_FOTO)
-                .append(TipoDato.BLOB)
-                .append(")");
+        ct = new cTablas(iTablas.VENTA, lcCampos);
+        ct.queryCreaTabla();
+        db.execSQL(ct.getStrBuilderTabla().toString());
 
-        db.execSQL(strBuilder.toString());
-        strBuilder.setLength(0);
-
+        /*  Investigar  */
         strBuilder.append("PRAGMA foreign_keys = ON;");
 
         db.execSQL(strBuilder.toString());
         strBuilder.setLength(0);
 
     }
-
-    /*interface Tables{
-        static final String USER = "user";
-        static final String ARTICLE = "article";
-        static final String VENTA = "venta";
-        static final String MARCA = "marca";
-        static final String VENTA_MARCA = "venta_marca";
-    }*/
 }

@@ -18,14 +18,12 @@ import android.util.Log;
 import space.credifast.credifast.interfaces.iArticleColumns;
 import space.credifast.credifast.interfaces.iMarcaColumns;
 import space.credifast.credifast.interfaces.iTablas;
-import space.credifast.credifast.provider.crediFastContract.UserColumns;
-import space.credifast.credifast.provider.crediFastContract.VentaColumns;
-import space.credifast.credifast.provider.crediFastContract.VentaMarcaColumns;
+import space.credifast.credifast.interfaces.iUserColumns;
+import space.credifast.credifast.interfaces.iVentaColumns;
 import space.credifast.credifast.provider.crediFastContract.article;
 import space.credifast.credifast.provider.crediFastContract.marca;
 import space.credifast.credifast.provider.crediFastContract.user;
 import space.credifast.credifast.provider.crediFastContract.venta;
-import space.credifast.credifast.provider.crediFastContract.venta_marca;
 
 import java.util.ArrayList;
 
@@ -112,7 +110,7 @@ public class crediFastProvider extends ContentProvider {
         switch (match){
             case CODE_SINGLE_USER:
                 Id = user.getUserId(uri);
-                queryBuilder.appendWhere(UserColumns._ID + " = " + Id);
+                queryBuilder.appendWhere(iUserColumns._ID + " = " + Id);
 
             case CODE_ALL_USERS:
                 queryBuilder.setTables(iTablas.USER);
@@ -128,7 +126,7 @@ public class crediFastProvider extends ContentProvider {
 
             case CODE_SINGLE_VENTA:
                 Id = venta.getVentaId(uri);
-                queryBuilder.appendWhere(VentaColumns._ID + "=" + Id);
+                queryBuilder.appendWhere(iVentaColumns._ID + "=" + Id);
                 break;
 
             case CODE_ALL_VENTA:
@@ -144,14 +142,14 @@ public class crediFastProvider extends ContentProvider {
                 queryBuilder.setTables(iTablas.MARCA);
                 break;
 
-            case CODE_ALL_VENTA_MARCA:
+            /*case CODE_ALL_VENTA_MARCA:
                 queryBuilder.setTables("venta inner join marca on venta.venta_marca_id = marca._id");
                 break;
 
             case CODE_SINGLE_VENTA_MARCA:
                 Id = venta_marca.getMarcaId(uri);
                 queryBuilder.appendWhere(VentaMarcaColumns._ID + "=" + Id);
-                break;
+                break;*/
 
             default:
                 Log.d(TAG, "Opcion no valida");
@@ -277,7 +275,7 @@ public class crediFastProvider extends ContentProvider {
         switch (match){
             case CODE_SINGLE_USER:
                 id = user.getUserId(uri);
-                deleteRows = db.delete(iTablas.USER, UserColumns._ID + "=?", new String[]{id});
+                deleteRows = db.delete(iTablas.USER, iUserColumns._ID + "=?", new String[]{id});
                 break;
 
             case CODE_ALL_USERS:
@@ -295,7 +293,7 @@ public class crediFastProvider extends ContentProvider {
 
             case CODE_SINGLE_VENTA:
                 id = venta.getVentaId(uri);
-                deleteRows = db.delete(iTablas.VENTA, VentaColumns._ID + "=?", new String[]{id});
+                deleteRows = db.delete(iTablas.VENTA, iVentaColumns._ID + "=?", new String[]{id});
                 break;
 
             case CODE_ALL_VENTA:
@@ -331,7 +329,7 @@ public class crediFastProvider extends ContentProvider {
         switch (match){
             case CODE_SINGLE_USER:
                 id = user.getUserId(uri);
-                updateRows = db.update(iTablas.USER, values, UserColumns._ID + "=?", new String[]{id});
+                updateRows = db.update(iTablas.USER, values, iUserColumns._ID + "=?", new String[]{id});
                 break;
 
             case CODE_ALL_USERS:
@@ -349,7 +347,7 @@ public class crediFastProvider extends ContentProvider {
 
             case CODE_SINGLE_VENTA:
                 id = venta.getVentaId(uri);
-                updateRows = db.update(iTablas.VENTA, values, VentaColumns._ID + "=?", new String[]{id});
+                updateRows = db.update(iTablas.VENTA, values, iVentaColumns._ID + "=?", new String[]{id});
                 break;
 
             case CODE_ALL_VENTA:
