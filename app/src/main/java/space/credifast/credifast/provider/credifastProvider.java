@@ -16,7 +16,8 @@ import android.util.Log;
 
 //import space.credifast.credifast.provider.crediFastContract.ArticleColumns;
 import space.credifast.credifast.interfaces.iArticleColumns;
-import space.credifast.credifast.provider.crediFastContract.MarcaColumns;
+import space.credifast.credifast.interfaces.iMarcaColumns;
+import space.credifast.credifast.interfaces.iTablas;
 import space.credifast.credifast.provider.crediFastContract.UserColumns;
 import space.credifast.credifast.provider.crediFastContract.VentaColumns;
 import space.credifast.credifast.provider.crediFastContract.VentaMarcaColumns;
@@ -25,7 +26,6 @@ import space.credifast.credifast.provider.crediFastContract.marca;
 import space.credifast.credifast.provider.crediFastContract.user;
 import space.credifast.credifast.provider.crediFastContract.venta;
 import space.credifast.credifast.provider.crediFastContract.venta_marca;
-import space.credifast.credifast.provider.crediFastDatabase.Tables;
 
 import java.util.ArrayList;
 
@@ -115,7 +115,7 @@ public class crediFastProvider extends ContentProvider {
                 queryBuilder.appendWhere(UserColumns._ID + " = " + Id);
 
             case CODE_ALL_USERS:
-                queryBuilder.setTables(Tables.USER);
+                queryBuilder.setTables(iTablas.USER);
                 break;
 
             case CODE_SINGLE_ARTICLE:
@@ -123,7 +123,7 @@ public class crediFastProvider extends ContentProvider {
                 queryBuilder.appendWhere(iArticleColumns._ID + " = " + Id);
 
             case CODE_ALL_ARTICLES:
-                queryBuilder.setTables(Tables.ARTICLE);
+                queryBuilder.setTables(iTablas.ARTICLE);
                 break;
 
             case CODE_SINGLE_VENTA:
@@ -132,16 +132,16 @@ public class crediFastProvider extends ContentProvider {
                 break;
 
             case CODE_ALL_VENTA:
-                queryBuilder.setTables(Tables.VENTA);
+                queryBuilder.setTables(iTablas.VENTA);
                 break;
 
             case CODE_SINGLE_MARCA:
                 Id = marca.getMarcaId(uri);
-                queryBuilder.appendWhere(MarcaColumns._ID + "=" + Id);
+                queryBuilder.appendWhere(iMarcaColumns._ID + "=" + Id);
                 break;
 
             case CODE_ALL_MARCA:
-                queryBuilder.setTables(Tables.MARCA);
+                queryBuilder.setTables(iTablas.MARCA);
                 break;
 
             case CODE_ALL_VENTA_MARCA:
@@ -238,22 +238,22 @@ public class crediFastProvider extends ContentProvider {
         switch (match){
             case CODE_ALL_USERS:
                 //crediFastDatabase.dropTables(db);
-                rowId = db.insert(Tables.USER, null, values);
+                rowId = db.insert(iTablas.USER, null, values);
                 newUri = ContentUris.withAppendedId(user.CONTENT_URI, rowId);
                 break;
 
             case CODE_ALL_ARTICLES:
-                rowId = db.insert(Tables.ARTICLE, null, values);
+                rowId = db.insert(iTablas.ARTICLE, null, values);
                 newUri = ContentUris.withAppendedId(article.CONTENT_URI, rowId);
                 break;
 
             case CODE_ALL_VENTA:
-                rowId = db.insert(Tables.VENTA, null, values);
+                rowId = db.insert(iTablas.VENTA, null, values);
                 newUri = ContentUris.withAppendedId(venta.CONTENT_URI, rowId);
                 break;
 
             case CODE_ALL_MARCA:
-                rowId = db.insert(Tables.MARCA, null, values);
+                rowId = db.insert(iTablas.MARCA, null, values);
                 newUri = ContentUris.withAppendedId(marca.CONTENT_URI, rowId);
                 break;
 
@@ -277,38 +277,38 @@ public class crediFastProvider extends ContentProvider {
         switch (match){
             case CODE_SINGLE_USER:
                 id = user.getUserId(uri);
-                deleteRows = db.delete(Tables.USER, UserColumns._ID + "=?", new String[]{id});
+                deleteRows = db.delete(iTablas.USER, UserColumns._ID + "=?", new String[]{id});
                 break;
 
             case CODE_ALL_USERS:
-                deleteRows = db.delete(Tables.USER, selection, selectionArgs);
+                deleteRows = db.delete(iTablas.USER, selection, selectionArgs);
                 break;
 
             case CODE_SINGLE_ARTICLE:
                 id = article.getArticleId(uri);
-                deleteRows = db.delete(Tables.ARTICLE, iArticleColumns._ID + "=?", new String[]{id});
+                deleteRows = db.delete(iTablas.ARTICLE, iArticleColumns._ID + "=?", new String[]{id});
                 break;
 
             case CODE_ALL_ARTICLES:
-                deleteRows = db.delete(Tables.ARTICLE, selection, selectionArgs);
+                deleteRows = db.delete(iTablas.ARTICLE, selection, selectionArgs);
                 break;
 
             case CODE_SINGLE_VENTA:
                 id = venta.getVentaId(uri);
-                deleteRows = db.delete(Tables.VENTA, VentaColumns._ID + "=?", new String[]{id});
+                deleteRows = db.delete(iTablas.VENTA, VentaColumns._ID + "=?", new String[]{id});
                 break;
 
             case CODE_ALL_VENTA:
-                deleteRows = db.delete(Tables.VENTA, selection, selectionArgs);
+                deleteRows = db.delete(iTablas.VENTA, selection, selectionArgs);
                 break;
 
             case CODE_SINGLE_MARCA:
                 id = marca.getMarcaId(uri);
-                deleteRows = db.delete(Tables.MARCA, MarcaColumns._ID + "=?", new String[]{id});
+                deleteRows = db.delete(iTablas.MARCA, iMarcaColumns._ID + "=?", new String[]{id});
                 break;
 
             case CODE_ALL_MARCA:
-                deleteRows = db.delete(Tables.MARCA, selection, selectionArgs);
+                deleteRows = db.delete(iTablas.MARCA, selection, selectionArgs);
                 break;
 
             default:
@@ -331,38 +331,38 @@ public class crediFastProvider extends ContentProvider {
         switch (match){
             case CODE_SINGLE_USER:
                 id = user.getUserId(uri);
-                updateRows = db.update(Tables.USER, values, UserColumns._ID + "=?", new String[]{id});
+                updateRows = db.update(iTablas.USER, values, UserColumns._ID + "=?", new String[]{id});
                 break;
 
             case CODE_ALL_USERS:
-                updateRows = db.update(Tables.USER, values, selection, selectionArgs);
+                updateRows = db.update(iTablas.USER, values, selection, selectionArgs);
                 break;
 
             case CODE_SINGLE_ARTICLE:
                 id = article.getArticleId(uri);
-                updateRows = db.update(Tables.ARTICLE, values, iArticleColumns._ID + "=?", new String[]{id});
+                updateRows = db.update(iTablas.ARTICLE, values, iArticleColumns._ID + "=?", new String[]{id});
                 break;
 
             case CODE_ALL_ARTICLES:
-                updateRows = db.update(Tables.ARTICLE, values, selection, selectionArgs);
+                updateRows = db.update(iTablas.ARTICLE, values, selection, selectionArgs);
                 break;
 
             case CODE_SINGLE_VENTA:
                 id = venta.getVentaId(uri);
-                updateRows = db.update(Tables.VENTA, values, VentaColumns._ID + "=?", new String[]{id});
+                updateRows = db.update(iTablas.VENTA, values, VentaColumns._ID + "=?", new String[]{id});
                 break;
 
             case CODE_ALL_VENTA:
-                updateRows = db.update(Tables.VENTA, values, selection, selectionArgs);
+                updateRows = db.update(iTablas.VENTA, values, selection, selectionArgs);
                 break;
 
             case CODE_SINGLE_MARCA:
                 id = marca.getMarcaId(uri);
-                updateRows = db.update(Tables.MARCA, values, MarcaColumns._ID + "=?", new String[]{id});
+                updateRows = db.update(iTablas.MARCA, values, iMarcaColumns._ID + "=?", new String[]{id});
                 break;
 
             case CODE_ALL_MARCA:
-                updateRows = db.update(Tables.MARCA, values, selection, selectionArgs);
+                updateRows = db.update(iTablas.MARCA, values, selection, selectionArgs);
                 break;
 
             default:

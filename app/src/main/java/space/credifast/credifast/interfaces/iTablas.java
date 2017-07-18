@@ -1,0 +1,13 @@
+package space.credifast.credifast.interfaces;
+
+/**
+ * Created by angel on 15/07/2017.
+ */
+
+public interface iTablas {
+    static final String USER = "user";
+    static final String ARTICLE = "article";
+    static final String VENTA = "venta";
+    static final String MARCA = "marca";
+    static final String VENTA_MARCA = "venta_marca";
+}

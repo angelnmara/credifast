@@ -5,7 +5,8 @@ import android.net.Uri;
 import android.provider.BaseColumns;
 
 import space.credifast.credifast.interfaces.iArticleColumns;
-import space.credifast.credifast.provider.crediFastDatabase.Tables;
+import space.credifast.credifast.interfaces.iMarcaColumns;
+import space.credifast.credifast.interfaces.iTablas;
 
 /**
  * Created by Qualtop on 02/09/2016.
@@ -15,11 +16,11 @@ public final class crediFastContract {
 
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
 
-    static final String PATH_USER = Tables.USER;
-    static final String PATH_ARTICLE = Tables.ARTICLE;
-    static final String PATH_VENTA = Tables.VENTA;
-    static final String PATH_MARCA = Tables.MARCA;
-    static final String PATH_VENTA_MARCA = Tables.VENTA_MARCA;
+    static final String PATH_USER = iTablas.USER;
+    static final String PATH_ARTICLE = iTablas.ARTICLE;
+    static final String PATH_VENTA = iTablas.VENTA;
+    static final String PATH_MARCA = iTablas.MARCA;
+    static final String PATH_VENTA_MARCA = iTablas.VENTA_MARCA;
 
     private crediFastContract(){}
 
@@ -78,26 +79,14 @@ public final class crediFastContract {
 
     }
 
-    /*public interface iArticleColumns extends BaseColumns {
-        *//*public static final String ARTICLE_ID = "article_id";*//*
-        public static final String ARTICLE_CODE = "article_code";
-        public static final String ARTICLE_NAME = "article_name";
-        public static final String ARTICLE_DESC = "article_desc";
-        public static final String ARTICLE_MARCA_ID = "article_marca_id";
-        public static final String ARTICLE_PRECIO = "article_precio";
-        public static final String ARTICLE_COSTO = "article_costo";
-        public static final String ARTICLE_FOTO = "article_foto";
-        public static final String ARTICLE_STOCK = "article_stock";
-    }*/
-
-    public interface MarcaColumns extends BaseColumns {
-        /*public static final String MARCA_ID = "marca_id";*/
+    /*public interface MarcaColumns extends BaseColumns {
+        public static final String MARCA_ID = "marca_id";
         public static final String MARCA_NAME = "marca_name";
         public static final String MARCA_CODE = "marca_code";
         public static final String MARCA_IMAGEN = "marca_imagen";
         public static final String MARCA_OTRO1 = "marca_otro1";
         public static final String MARCA_OTRO2 = "marca_otro2";
-    }
+    }*/
 
     public interface VentaColumns extends BaseColumns {
         public static final String VENTA_ID = "venta_id";
@@ -141,8 +130,8 @@ public final class crediFastContract {
 
     public static abstract class user implements UserColumns{
         public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_USER).build();
-        public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/vdn." + CONTENT_AUTHORITY + "." + Tables.USER;
-        public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/vdn." + CONTENT_AUTHORITY + "." + Tables.USER;
+        public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/vdn." + CONTENT_AUTHORITY + "." + iTablas.USER;
+        public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/vdn." + CONTENT_AUTHORITY + "." + iTablas.USER;
         public static final String DEFAULT_SORT = UserColumns.NAME + " COLLATE NOCASE ASC";
 
         public static Uri buildUserUri(String UserId){
@@ -157,8 +146,8 @@ public final class crediFastContract {
 
     public static abstract class venta implements VentaColumns{
         public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_VENTA).build();
-        public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/vdn." + CONTENT_AUTHORITY + "." + Tables.VENTA;
-        public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/vdn." + CONTENT_AUTHORITY + "." + Tables.VENTA;
+        public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/vdn." + CONTENT_AUTHORITY + "." + iTablas.VENTA;
+        public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/vdn." + CONTENT_AUTHORITY + "." + iTablas.VENTA;
         public static final String DEFAULT_SORT = VentaColumns.VENTA_NAME + " COLLATE NOCASE ASC";
 
         public static Uri buildVentaUri(String VentaId){
@@ -171,11 +160,11 @@ public final class crediFastContract {
 
     }
 
-    public static abstract class marca implements MarcaColumns{
+    public static abstract class marca implements iMarcaColumns {
         public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_MARCA).build();
-        public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/vdn." + CONTENT_AUTHORITY + "." + Tables.MARCA;
-        public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/vdn." + CONTENT_AUTHORITY + "." + Tables.MARCA;
-        public static final String DEFAULT_SORT = MarcaColumns.MARCA_NAME + " COLLATE NOCASE ASC";
+        public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/vdn." + CONTENT_AUTHORITY + "." + iTablas.MARCA;
+        public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/vdn." + CONTENT_AUTHORITY + "." + iTablas.MARCA;
+        public static final String DEFAULT_SORT = iMarcaColumns.MARCA_NAME + " COLLATE NOCASE ASC";
 
         public static Uri buildMarcaUri(String VentaId){
             return CONTENT_URI.buildUpon().appendPath(_ID).build();
@@ -188,8 +177,8 @@ public final class crediFastContract {
 
     public static abstract class venta_marca implements VentaMarcaColumns{
         public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_VENTA_MARCA).build();
-        public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/vdn." + CONTENT_AUTHORITY + "." + Tables.VENTA_MARCA;
-        public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/vdn." + CONTENT_AUTHORITY + "." + Tables.VENTA_MARCA;
+        public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/vdn." + CONTENT_AUTHORITY + "." + iTablas.VENTA_MARCA;
+        public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/vdn." + CONTENT_AUTHORITY + "." + iTablas.VENTA_MARCA;
         public static final String DEFAULT_SORT = VentaMarcaColumns.VENTA_NAME + " COLLATE NOCASE ASC";
 
         public static Uri buildMarcaUri(String VentaId){
@@ -203,8 +192,8 @@ public final class crediFastContract {
 
     public static abstract class article implements iArticleColumns {
         public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_ARTICLE).build();
-        public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/vdn." + CONTENT_AUTHORITY + "." + Tables.ARTICLE;
-        public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/vdn." + CONTENT_AUTHORITY + "." + Tables.ARTICLE;
+        public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/vdn." + CONTENT_AUTHORITY + "." + iTablas.ARTICLE;
+        public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/vdn." + CONTENT_AUTHORITY + "." + iTablas.ARTICLE;
         public static final String DEFAULT_SORT = iArticleColumns.ARTICLE_NAME + " COLLATE NOCASE ASC";
 
         public static Uri buildArticleUri(String ArticleId){

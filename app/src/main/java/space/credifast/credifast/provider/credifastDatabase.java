@@ -5,8 +5,14 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import space.credifast.credifast.clases.cCampos;
+import space.credifast.credifast.clases.cTablas;
 import space.credifast.credifast.interfaces.iArticleColumns;
-import space.credifast.credifast.provider.crediFastContract.MarcaColumns;
+import space.credifast.credifast.interfaces.iMarcaColumns;
+import space.credifast.credifast.interfaces.iTablas;
 import space.credifast.credifast.provider.crediFastContract.TipoDato;
 import space.credifast.credifast.provider.crediFastContract.UserColumns;
 import space.credifast.credifast.provider.crediFastContract.VentaColumns;
@@ -20,7 +26,7 @@ public class crediFastDatabase extends SQLiteOpenHelper {
 
     public static final String DATABASE_NAME = "crediFastDB";
 
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 4;
 
     public crediFastDatabase(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -59,25 +65,25 @@ public class crediFastDatabase extends SQLiteOpenHelper {
 
             db.beginTransaction();
             //db.delete(Tables.USER, null, null);
-            db.execSQL("DROP TABLE IF EXISTS " + Tables.USER);
+            db.execSQL("DROP TABLE IF EXISTS " + iTablas.USER);
             db.setTransactionSuccessful();
             db.endTransaction();
 
             db.beginTransaction();
             //db.delete(Tables.ARTICLE, null, null);
-            db.execSQL("DROP TABLE IF EXISTS " + Tables.ARTICLE);
+            db.execSQL("DROP TABLE IF EXISTS " + iTablas.ARTICLE);
             db.setTransactionSuccessful();
             db.endTransaction();
 
             db.beginTransaction();
             //db.delete(Tables.ARTICLE, null, null);
-            db.execSQL("DROP TABLE IF EXISTS " + Tables.VENTA);
+            db.execSQL("DROP TABLE IF EXISTS " + iTablas.VENTA);
             db.setTransactionSuccessful();
             db.endTransaction();
 
             db.beginTransaction();
             //db.delete(Tables.ARTICLE, null, null);
-            db.execSQL("DROP TABLE IF EXISTS " + Tables.MARCA);
+            db.execSQL("DROP TABLE IF EXISTS " + iTablas.MARCA);
             db.setTransactionSuccessful();
             db.endTransaction();
 
@@ -89,7 +95,7 @@ public class crediFastDatabase extends SQLiteOpenHelper {
     private static void createTables(SQLiteDatabase db){
 
         final StringBuilder strBuilder = new StringBuilder();
-        strBuilder.append("CREATE TABLE IF NOT EXISTS ").append(Tables.USER)
+        strBuilder.append("CREATE TABLE IF NOT EXISTS ").append(iTablas.USER)
                 .append("(").append(UserColumns._ID)
                 .append(" INTEGER PRIMARY KEY AUTOINCREMENT,")
                 .append(UserColumns.MEMBER_NUMBER).append(" INTEGER,")
@@ -119,34 +125,38 @@ public class crediFastDatabase extends SQLiteOpenHelper {
         db.execSQL(strBuilder.toString());
         strBuilder.setLength(0);
 
-        strBuilder.append("CREATE TABLE IF NOT EXISTS ")
-                .append(Tables.ARTICLE).append("(")
-                .append(iArticleColumns._ID)
-                .append(TipoDato.INT_KEY)
-                .append(iArticleColumns.ARTICLE_CODE)
-                .append(TipoDato.TEXT_)
-                .append(iArticleColumns.ARTICLE_NAME)
-                .append(TipoDato.TEXT_)
-                .append(iArticleColumns.ARTICLE_DESC)
-                .append(TipoDato.TEXT_)
-                .append(iArticleColumns.ARTICLE_PRECIO)
-                .append(TipoDato.DOUBLE_)
-                .append(iArticleColumns.ARTICLE_COSTO)
-                .append(TipoDato.DOUBLE_)
-                .append(iArticleColumns.ARTICLE_FOTO)
-                .append(TipoDato.BLOB_)
-                .append(iArticleColumns.ARTICLE_STOCK)
-                .append(TipoDato.TEXT_)
-                .append(iArticleColumns.ARTICLE_MARCA_ID)
-                .append(TipoDato.INT)
-                .append(" NOT NULL, FOREIGN KEY(article_marca_id) REFERENCES marca(_id)")
-                .append(")");
+        List<cCampos> lcCampos = new ArrayList<>();
 
-        db.execSQL(strBuilder.toString());
-        strBuilder.setLength(0);
+        lcCampos.add(new cCampos(iArticleColumns._ID, true, "int"));
+        lcCampos.add(new cCampos(iArticleColumns.ARTICLE_CODE, false, "string"));
+        lcCampos.add(new cCampos(iArticleColumns.ARTICLE_NAME, false, "string"));
+        lcCampos.add(new cCampos(iArticleColumns.ARTICLE_DESC, false, "string"));
+        lcCampos.add(new cCampos(iArticleColumns.ARTICLE_MARCA_ID, false, "int"));
+        lcCampos.add(new cCampos(iArticleColumns.ARTICLE_PRECIO, false, "decimal"));
+        lcCampos.add(new cCampos(iArticleColumns.ARTICLE_COSTO, false, "decimal"));
+        lcCampos.add(new cCampos(iArticleColumns.ARTICLE_FOTO, false, "blob"));
+        lcCampos.add(new cCampos(iArticleColumns.ARTICLE_STOCK, false, "int"));
 
-        strBuilder.append(TipoDato.CREATE_TABLE)
-                .append(Tables.MARCA)
+        cTablas ct = new cTablas(iTablas.ARTICLE, lcCampos);
+        ct.queryCreaTabla();
+        db.execSQL(ct.getStrBuilderTabla().toString());
+
+        lcCampos = new ArrayList<>();
+
+        lcCampos.add(new cCampos(iMarcaColumns._ID, true, "int"));
+        lcCampos.add(new cCampos(iMarcaColumns.MARCA_CODE, false, "int"));
+        lcCampos.add(new cCampos(iMarcaColumns.MARCA_NAME, false, "string"));
+        lcCampos.add(new cCampos(iMarcaColumns.MARCA_DESC, false, "string"));
+        lcCampos.add(new cCampos(iMarcaColumns.MARCA_IMAGEN, false, "blob"));
+        lcCampos.add(new cCampos(iMarcaColumns.MARCA_OTRO1, false, "string"));
+        lcCampos.add(new cCampos(iMarcaColumns.MARCA_OTRO2, false, "string"));
+
+        ct = new cTablas(iTablas.MARCA, lcCampos);
+        ct.queryCreaTabla();
+        db.execSQL(ct.getStrBuilderTabla().toString());
+
+        /*strBuilder.append(TipoDato.CREATE_TABLE)
+                .append(iTablas.MARCA)
                 .append("(")
                 .append(MarcaColumns._ID)
                 .append(TipoDato.INT_KEY)
@@ -163,10 +173,10 @@ public class crediFastDatabase extends SQLiteOpenHelper {
                 .append(")");
 
         db.execSQL(strBuilder.toString());
-        strBuilder.setLength(0);
+        strBuilder.setLength(0);*/
 
         strBuilder.append(TipoDato.CREATE_TABLE)
-                .append(Tables.VENTA)
+                .append(iTablas.VENTA)
                 .append("(")
                 .append(VentaColumns._ID)
                 .append(TipoDato.INT_KEY)
@@ -194,11 +204,11 @@ public class crediFastDatabase extends SQLiteOpenHelper {
 
     }
 
-    interface Tables{
+    /*interface Tables{
         static final String USER = "user";
         static final String ARTICLE = "article";
         static final String VENTA = "venta";
         static final String MARCA = "marca";
         static final String VENTA_MARCA = "venta_marca";
-    }
+    }*/
 }
