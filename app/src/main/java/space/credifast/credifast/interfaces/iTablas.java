@@ -6,6 +6,7 @@ package space.credifast.credifast.interfaces;
 
 public interface iTablas {
     static final String USER = "user";
+    static final String FACEBOOK_USER = "facebook_user";
     static final String ARTICLE = "article";
     static final String VENTA = "venta";
     static final String MARCA = "marca";

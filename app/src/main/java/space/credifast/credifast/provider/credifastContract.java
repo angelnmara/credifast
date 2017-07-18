@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.provider.BaseColumns;
 
 import space.credifast.credifast.interfaces.iArticleColumns;
+import space.credifast.credifast.interfaces.iFacebookUserColumns;
 import space.credifast.credifast.interfaces.iMarcaColumns;
 import space.credifast.credifast.interfaces.iTablas;
 import space.credifast.credifast.interfaces.iUserColumns;
@@ -23,6 +24,8 @@ public final class crediFastContract {
     static final String PATH_VENTA = iTablas.VENTA;
     static final String PATH_MARCA = iTablas.MARCA;
     static final String PATH_VENTA_MARCA = iTablas.VENTA_MARCA;
+
+    static final String PATH_FACEBOOK_USER = iTablas.FACEBOOK_USER;
 
     private crediFastContract(){}
 
@@ -111,6 +114,22 @@ public final class crediFastContract {
         }
 
         public static String getArticleId(Uri uri){
+            return uri.getLastPathSegment();
+        }
+
+    }
+
+    public static abstract class facebook_user implements iFacebookUserColumns {
+        public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_FACEBOOK_USER).build();
+        public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/vdn." + CONTENT_AUTHORITY + "." + iTablas.FACEBOOK_USER;
+        public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/vdn." + CONTENT_AUTHORITY + "." + iTablas.FACEBOOK_USER;
+        public static final String DEFAULT_SORT = iFacebookUserColumns.FACEBOOK_NAME + " COLLATE NOCASE ASC";
+
+        public static Uri buildFacebookUserUri(String FacebookUserId){
+            return CONTENT_URI.buildUpon().appendPath(_ID).build();
+        }
+
+        public static String getFacebookUserId(Uri uri){
             return uri.getLastPathSegment();
         }
 

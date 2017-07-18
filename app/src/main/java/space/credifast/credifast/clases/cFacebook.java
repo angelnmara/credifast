@@ -3,7 +3,6 @@ package space.credifast.credifast.clases;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -14,10 +13,9 @@ import com.facebook.GraphResponse;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import space.credifast.credifast.dialogs.genericDilog;
 import space.credifast.credifast.interfaces.iFacebook;
-import space.credifast.credifast.provider.crediFastContract;
-import space.credifast.credifast.interfaces.iArticleColumns;
+import space.credifast.credifast.interfaces.iFacebookUserColumns;
+import space.credifast.credifast.provider.crediFastContract.facebook_user;
 
 /**
  * Created by angel on 23/06/2017.
@@ -25,40 +23,8 @@ import space.credifast.credifast.interfaces.iArticleColumns;
 
 public class cFacebook implements iFacebook {
 
-    public GraphResponse getGraphResponse() {
-        return graphResponse;
-    }
-
-    public void setGraphResponse(GraphResponse graphResponse) {
-        this.graphResponse = graphResponse;
-    }
-
-    public GraphRequest getGraphRequest() {
-        return graphRequest;
-    }
-
-    public void setGraphRequest(GraphRequest graphRequest) {
-        this.graphRequest = graphRequest;
-    }
-
-    public JSONObject getJsonObject() {
-        return jsonObject;
-    }
-
-    public void setJsonObject(JSONObject jsonObject) {
-        this.jsonObject = jsonObject;
-    }
-
-    public AccessToken getAccessToken() {
-        return accessToken;
-    }
-
     public void setAccessToken(AccessToken accessToken) {
         this.accessToken = accessToken;
-    }
-
-    public String getCampos() {
-        return campos;
     }
 
     public void setCampos(String campos) {
@@ -73,12 +39,20 @@ public class cFacebook implements iFacebook {
         this.context = context;
     }
 
-    GraphResponse graphResponse;
     GraphRequest graphRequest;
-    JSONObject jsonObject;
     AccessToken accessToken;
     String campos;
     Context context;
+
+    public String getIdFacebook() {
+        return idFacebook;
+    }
+
+    public void setIdFacebook(String idFacebook) {
+        this.idFacebook = idFacebook;
+    }
+
+    String idFacebook;
 
     @Override
     public void getMe() {
@@ -86,26 +60,19 @@ public class cFacebook implements iFacebook {
                 accessToken, new GraphRequest.GraphJSONObjectCallback() {
                     @Override
                     public void onCompleted(JSONObject object, GraphResponse response) {
-                        jsonObject = object;
-                        graphResponse = response;
-                        //Log.d("Error", response.getError().toString());
                         final ContentResolver contentResolver = getContext().getContentResolver();
                         final ContentValues contentValues = new ContentValues();
-                        contentValues.put(iArticleColumns.ARTICLE_CODE, 1);
-                        contentValues.put(iArticleColumns.ARTICLE_DESC, "Descripcion");
-                        contentValues.put(iArticleColumns.ARTICLE_MARCA_ID, "Marca");
-                        contentValues.put(iArticleColumns.ARTICLE_NAME, "Nombre");
-                        contentValues.put(iArticleColumns.ARTICLE_PRECIO, 18.1);
-                        contentValues.put(iArticleColumns.ARTICLE_COSTO, 18.1);
-                        contentValues.put(iArticleColumns.ARTICLE_STOCK, 3);
-                        //contentValues.put(crediFastContract.iArticleColumns.ARTICLE_FOTO, ImgProductoByte);
 
-                        final Uri uri = contentResolver.insert(crediFastContract.article.CONTENT_URI, contentValues);
-                        Intent i = new Intent(getContext(), genericDilog.class);
-                        String id = crediFastContract.article.getArticleId(uri).toString();
-                        i.putExtra("message", "Se inserto correctamente " + id);
-                        //startActivity(i);
+                        try {
+                            contentValues.put(iFacebookUserColumns.FACEBOOK_ID, object.getInt("id"));
+                            contentValues.put(iFacebookUserColumns.FACEBOOK_NAME, object.getString("name"));
+                            contentValues.put(iFacebookUserColumns.FACEBOOK_EMAIL, object.getString("email"));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
 
+                        final Uri uri = contentResolver.insert(facebook_user.CONTENT_URI, contentValues);
+                        idFacebook = facebook_user.getFacebookUserId(uri).toString();
                     }
                 }
         );

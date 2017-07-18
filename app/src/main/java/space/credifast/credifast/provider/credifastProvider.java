@@ -16,6 +16,7 @@ import android.util.Log;
 
 //import space.credifast.credifast.provider.crediFastContract.ArticleColumns;
 import space.credifast.credifast.interfaces.iArticleColumns;
+import space.credifast.credifast.interfaces.iFacebookUserColumns;
 import space.credifast.credifast.interfaces.iMarcaColumns;
 import space.credifast.credifast.interfaces.iTablas;
 import space.credifast.credifast.interfaces.iUserColumns;
@@ -24,6 +25,7 @@ import space.credifast.credifast.provider.crediFastContract.article;
 import space.credifast.credifast.provider.crediFastContract.marca;
 import space.credifast.credifast.provider.crediFastContract.user;
 import space.credifast.credifast.provider.crediFastContract.venta;
+import space.credifast.credifast.provider.crediFastContract.facebook_user;
 
 import java.util.ArrayList;
 
@@ -49,6 +51,9 @@ public class crediFastProvider extends ContentProvider {
     private static final int CODE_ALL_VENTA_MARCA = 9;
     private static final int CODE_SINGLE_VENTA_MARCA = 10;
 
+    private static final int CODE_ALL_FACEBOOK_USER = 11;
+    private static final int CODE_SINGLE_FACEBOOK_USER = 12;
+
     private Context context;
     private static crediFastDatabase mOpenHelper;
     private static final UriMatcher sUri = buildUriMatcher();
@@ -71,6 +76,9 @@ public class crediFastProvider extends ContentProvider {
 
         matcher.addURI(authority, crediFastContract.PATH_VENTA_MARCA, CODE_ALL_VENTA_MARCA);
         matcher.addURI(authority, crediFastContract.PATH_VENTA_MARCA + "/#", CODE_SINGLE_VENTA_MARCA);
+
+        matcher.addURI(authority, crediFastContract.PATH_FACEBOOK_USER, CODE_ALL_FACEBOOK_USER);
+        matcher.addURI(authority, crediFastContract.PATH_FACEBOOK_USER + "/#", CODE_SINGLE_FACEBOOK_USER);
 
         return matcher;
     }
@@ -142,6 +150,15 @@ public class crediFastProvider extends ContentProvider {
                 queryBuilder.setTables(iTablas.MARCA);
                 break;
 
+            case CODE_SINGLE_FACEBOOK_USER:
+                Id = facebook_user.getFacebookUserId(uri);
+                queryBuilder.appendWhere(iFacebookUserColumns._ID + "=" + Id);
+                break;
+
+            case CODE_ALL_FACEBOOK_USER:
+                queryBuilder.setTables(iTablas.FACEBOOK_USER);
+                break;
+
             /*case CODE_ALL_VENTA_MARCA:
                 queryBuilder.setTables("venta inner join marca on venta.venta_marca_id = marca._id");
                 break;
@@ -176,6 +193,10 @@ public class crediFastProvider extends ContentProvider {
 
                 case CODE_ALL_VENTA_MARCA:
                     sortOrder = marca.DEFAULT_SORT;
+                    break;
+
+                case CODE_ALL_FACEBOOK_USER:
+                    sortOrder = facebook_user.DEFAULT_SORT;
                     break;
             }
 
@@ -219,6 +240,12 @@ public class crediFastProvider extends ContentProvider {
             case CODE_SINGLE_MARCA:
                 return marca.CONTENT_ITEM_TYPE;
 
+            case CODE_ALL_FACEBOOK_USER:
+                return facebook_user.CONTENT_TYPE;
+
+            case CODE_SINGLE_FACEBOOK_USER:
+                return facebook_user.CONTENT_ITEM_TYPE;
+
             default:
                 Log.d(TAG, "getType no definido");
         }
@@ -253,6 +280,11 @@ public class crediFastProvider extends ContentProvider {
             case CODE_ALL_MARCA:
                 rowId = db.insert(iTablas.MARCA, null, values);
                 newUri = ContentUris.withAppendedId(marca.CONTENT_URI, rowId);
+                break;
+
+            case CODE_ALL_FACEBOOK_USER:
+                rowId = db.insert(iTablas.FACEBOOK_USER, null, values);
+                newUri = ContentUris.withAppendedId(facebook_user.CONTENT_URI, rowId);
                 break;
 
             default:
@@ -309,6 +341,15 @@ public class crediFastProvider extends ContentProvider {
                 deleteRows = db.delete(iTablas.MARCA, selection, selectionArgs);
                 break;
 
+            case CODE_SINGLE_FACEBOOK_USER:
+                id = facebook_user.getFacebookUserId(uri);
+                deleteRows = db.delete(iTablas.FACEBOOK_USER, iFacebookUserColumns._ID + "=?", new String[]{id});
+                break;
+
+            case CODE_ALL_FACEBOOK_USER:
+                deleteRows = db.delete(iTablas.FACEBOOK_USER, selection, selectionArgs);
+                break;
+
             default:
                 Log.d(TAG, "No existe tabla para borrar");
                 break;
@@ -361,6 +402,15 @@ public class crediFastProvider extends ContentProvider {
 
             case CODE_ALL_MARCA:
                 updateRows = db.update(iTablas.MARCA, values, selection, selectionArgs);
+                break;
+
+            case CODE_SINGLE_FACEBOOK_USER:
+                id = facebook_user.getFacebookUserId(uri);
+                updateRows = db.update(iTablas.FACEBOOK_USER, values, iFacebookUserColumns._ID + "=?", new String[]{id});
+                break;
+
+            case CODE_ALL_FACEBOOK_USER:
+                updateRows = db.update(iTablas.FACEBOOK_USER, values, selection, selectionArgs);
                 break;
 
             default:

@@ -18,6 +18,7 @@ import com.facebook.login.widget.LoginButton;
 
 import space.credifast.credifast.R;
 import space.credifast.credifast.clases.cFacebook;
+import space.credifast.credifast.dialogs.genericDilog;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -99,6 +100,9 @@ public class facebookFragment extends Fragment {
                 cf.setAccessToken(loginResult.getAccessToken());
                 cf.setCampos("id, name, email");
                 cf.getMe();
+                Intent i = new Intent(getContext(), genericDilog.class);
+                i.putExtra("message", "Se inserto correctamente " + cf.getIdFacebook());
+                startActivity(i);
             }
 
             @Override
