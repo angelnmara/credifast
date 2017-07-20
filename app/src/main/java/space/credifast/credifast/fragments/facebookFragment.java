@@ -100,9 +100,9 @@ public class facebookFragment extends Fragment {
                 cf.setAccessToken(loginResult.getAccessToken());
                 cf.setCampos("id, name, email");
                 cf.getMe();
-                Intent i = new Intent(getContext(), genericDilog.class);
+                /*Intent i = new Intent(getContext(), genericDilog.class);
                 i.putExtra("message", "Se inserto correctamente " + cf.getIdFacebook());
-                startActivity(i);
+                startActivity(i);*/
             }
 
             @Override

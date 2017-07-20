@@ -3,8 +3,11 @@ package space.credifast.credifast.clases;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
+import android.media.AudioFocusRequest;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.facebook.AccessToken;
 import com.facebook.GraphRequest;
@@ -15,6 +18,7 @@ import org.json.JSONObject;
 
 import space.credifast.credifast.interfaces.iFacebook;
 import space.credifast.credifast.interfaces.iFacebookUserColumns;
+import space.credifast.credifast.provider.crediFastContract;
 import space.credifast.credifast.provider.crediFastContract.facebook_user;
 
 /**
@@ -39,6 +43,8 @@ public class cFacebook implements iFacebook {
         this.context = context;
     }
 
+    private final String TAG = "cFacebook";
+
     GraphRequest graphRequest;
     AccessToken accessToken;
     String campos;
@@ -46,10 +52,6 @@ public class cFacebook implements iFacebook {
 
     public String getIdFacebook() {
         return idFacebook;
-    }
-
-    public void setIdFacebook(String idFacebook) {
-        this.idFacebook = idFacebook;
     }
 
     String idFacebook;
@@ -63,16 +65,36 @@ public class cFacebook implements iFacebook {
                         final ContentResolver contentResolver = getContext().getContentResolver();
                         final ContentValues contentValues = new ContentValues();
 
+
                         try {
-                            contentValues.put(iFacebookUserColumns.FACEBOOK_ID, object.getInt("id"));
-                            contentValues.put(iFacebookUserColumns.FACEBOOK_NAME, object.getString("name"));
-                            contentValues.put(iFacebookUserColumns.FACEBOOK_EMAIL, object.getString("email"));
+                            if(!fnVerificaUsuario(object.getString("id"))){
+                                if(object.has("id")){
+                                    contentValues.put(iFacebookUserColumns.FACEBOOK_ID, object.getString("id"));
+                                }else{
+                                    Log.e(TAG, "usuario sin id");
+                                }
+                                if(object.has("name")){
+                                    contentValues.put(iFacebookUserColumns.FACEBOOK_NAME, object.getString("name"));
+                                }else{
+                                    Log.d(TAG, "usuairo sin name");
+                                }
+                                if(object.has("email")){
+                                    contentValues.put(iFacebookUserColumns.FACEBOOK_EMAIL, object.getString("email"));
+                                }else{
+                                    Log.d(TAG, "usuario sin email");
+                                }
+
+                                final Uri uri = contentResolver.insert(facebook_user.CONTENT_URI, contentValues);
+                                idFacebook = facebook_user.getFacebookUserId(uri).toString();
+                                Log.d(TAG, "Usuario se dio de alta con id = " + idFacebook);
+                            }
+                            else{
+                                Log.d(TAG, "Usuario existente");
+                            }
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
 
-                        final Uri uri = contentResolver.insert(facebook_user.CONTENT_URI, contentValues);
-                        idFacebook = facebook_user.getFacebookUserId(uri).toString();
                     }
                 }
         );
@@ -80,5 +102,17 @@ public class cFacebook implements iFacebook {
         params.putString("fields", campos);
         graphRequest.setParameters(params);
         graphRequest.executeAsync();
+    }
+
+    private boolean fnVerificaUsuario(String id){
+        boolean existe = false;
+        String[] projection = new String[]{iFacebookUserColumns.FACEBOOK_ID, iFacebookUserColumns.FACEBOOK_NAME, iFacebookUserColumns.FACEBOOK_EMAIL};
+        String where = iFacebookUserColumns.FACEBOOK_ID +  "=?";
+        String[] vals = new String[]{id};
+        Cursor facebookUserCursor = getContext().getContentResolver().query(facebook_user.CONTENT_URI, projection, where, vals, null);
+        if(facebookUserCursor.getCount()>0){
+            existe=true;
+        }
+        return existe;
     }
 }
