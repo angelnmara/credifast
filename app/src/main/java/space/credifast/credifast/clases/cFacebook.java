@@ -68,21 +68,15 @@ public class cFacebook implements iFacebook {
 
                         try {
                             if(!fnVerificaUsuario(object.getString("id"))){
-                                if(object.has("id")){
-                                    contentValues.put(iFacebookUserColumns.FACEBOOK_ID, object.getString("id"));
-                                }else{
-                                    Log.e(TAG, "usuario sin id");
-                                }
-                                if(object.has("name")){
-                                    contentValues.put(iFacebookUserColumns.FACEBOOK_NAME, object.getString("name"));
-                                }else{
-                                    Log.d(TAG, "usuairo sin name");
-                                }
-                                if(object.has("email")){
-                                    contentValues.put(iFacebookUserColumns.FACEBOOK_EMAIL, object.getString("email"));
-                                }else{
-                                    Log.d(TAG, "usuario sin email");
-                                }
+
+                                String IdF = object.has("id")?object.getString("id"):"";
+                                contentValues.put(iFacebookUserColumns.FACEBOOK_ID, IdF);
+
+                                String nameF = object.has("name")?object.getString("name"):"";
+                                contentValues.put(iFacebookUserColumns.FACEBOOK_NAME, nameF);
+
+                                String emailF = object.has("email")?object.getString("email"):"";
+                                contentValues.put(iFacebookUserColumns.FACEBOOK_EMAIL, emailF);
 
                                 final Uri uri = contentResolver.insert(facebook_user.CONTENT_URI, contentValues);
                                 idFacebook = facebook_user.getFacebookUserId(uri).toString();
