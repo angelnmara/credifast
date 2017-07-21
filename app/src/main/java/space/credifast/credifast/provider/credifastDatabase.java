@@ -26,7 +26,7 @@ public class crediFastDatabase extends SQLiteOpenHelper {
 
     public static final String DATABASE_NAME = "crediFastDB";
 
-    private static final int DATABASE_VERSION = 8;
+    private static final int DATABASE_VERSION = 9;
 
     public crediFastDatabase(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -175,6 +175,7 @@ public class crediFastDatabase extends SQLiteOpenHelper {
         lcCampos.add(new cCampos(iFacebookUserColumns.FACEBOOK_ID, false, "int"));
         lcCampos.add(new cCampos(iFacebookUserColumns.FACEBOOK_NAME, false, "string"));
         lcCampos.add(new cCampos(iFacebookUserColumns.FACEBOOK_EMAIL, false, "string"));
+        lcCampos.add(new cCampos(iFacebookUserColumns.FACEBOOK_FOTO_PERFIL, false, "string"));
 
         ct = new cTablas(iTablas.FACEBOOK_USER, lcCampos);
         ct.queryCreaTabla();
