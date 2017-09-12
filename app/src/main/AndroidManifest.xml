@@ -48,7 +48,7 @@
 
         <provider
             android:authorities="space.credifast.credifast.provider"
-            android:name=".provider.crediFastProvider"
+            android:name=".provider.credifastProvider"
             android:exported="false"></provider>
 
         <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"></meta-data>

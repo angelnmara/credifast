@@ -10,5 +10,5 @@ public interface iFacebookUserColumns extends BaseColumns {
     public static final String FACEBOOK_ID = "facebook_id";
     public static final String FACEBOOK_NAME = "facebook_name";
     public static final String FACEBOOK_EMAIL = "facebook_email";
-    public static final String FACEBOOK_FOTO_PERFIL = "facebook_foto_perfil";
+    public static final String FACEBOOK_FOTO_PERFIL_URL = "facebook_foto_perfil_url";
 }

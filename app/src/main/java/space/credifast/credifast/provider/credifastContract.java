@@ -14,7 +14,7 @@ import space.credifast.credifast.interfaces.iVentaColumns;
 /**
  * Created by Qualtop on 02/09/2016.
  */
-public final class crediFastContract {
+public final class credifastContract {
     public static final String CONTENT_AUTHORITY = "space.credifast.credifast.provider";
 
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
@@ -27,7 +27,7 @@ public final class crediFastContract {
 
     static final String PATH_FACEBOOK_USER = iTablas.FACEBOOK_USER;
 
-    private crediFastContract(){}
+    private credifastContract(){}
 
     /*interface VentaMarcaColumns extends BaseColumns {
         public static final String VENTA_ID = "venta_id";

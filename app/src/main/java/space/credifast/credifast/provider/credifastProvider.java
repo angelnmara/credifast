@@ -21,18 +21,18 @@ import space.credifast.credifast.interfaces.iMarcaColumns;
 import space.credifast.credifast.interfaces.iTablas;
 import space.credifast.credifast.interfaces.iUserColumns;
 import space.credifast.credifast.interfaces.iVentaColumns;
-import space.credifast.credifast.provider.crediFastContract.article;
-import space.credifast.credifast.provider.crediFastContract.marca;
-import space.credifast.credifast.provider.crediFastContract.user;
-import space.credifast.credifast.provider.crediFastContract.venta;
-import space.credifast.credifast.provider.crediFastContract.facebook_user;
+import space.credifast.credifast.provider.credifastContract.article;
+import space.credifast.credifast.provider.credifastContract.marca;
+import space.credifast.credifast.provider.credifastContract.user;
+import space.credifast.credifast.provider.credifastContract.venta;
+import space.credifast.credifast.provider.credifastContract.facebook_user;
 
 import java.util.ArrayList;
 
 /**
  * Created by Qualtop on 05/09/2016.
  */
-public class crediFastProvider extends ContentProvider {
+public class credifastProvider extends ContentProvider {
 
     private static final String TAG = "crediFastProvider";
 
@@ -55,30 +55,30 @@ public class crediFastProvider extends ContentProvider {
     private static final int CODE_SINGLE_FACEBOOK_USER = 12;
 
     private Context context;
-    private static crediFastDatabase mOpenHelper;
+    private static credifastDatabase mOpenHelper;
     private static final UriMatcher sUri = buildUriMatcher();
 
     private static UriMatcher buildUriMatcher() {
-        final String authority = crediFastContract.CONTENT_AUTHORITY;
+        final String authority = credifastContract.CONTENT_AUTHORITY;
         final UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
 
-        matcher.addURI(authority, crediFastContract.PATH_USER, CODE_ALL_USERS);
-        matcher.addURI(authority, crediFastContract.PATH_USER + "/#", CODE_SINGLE_USER);
+        matcher.addURI(authority, credifastContract.PATH_USER, CODE_ALL_USERS);
+        matcher.addURI(authority, credifastContract.PATH_USER + "/#", CODE_SINGLE_USER);
 
-        matcher.addURI(authority, crediFastContract.PATH_ARTICLE, CODE_ALL_ARTICLES);
-        matcher.addURI(authority, crediFastContract.PATH_ARTICLE + "/#", CODE_SINGLE_ARTICLE);
+        matcher.addURI(authority, credifastContract.PATH_ARTICLE, CODE_ALL_ARTICLES);
+        matcher.addURI(authority, credifastContract.PATH_ARTICLE + "/#", CODE_SINGLE_ARTICLE);
 
-        matcher.addURI(authority, crediFastContract.PATH_VENTA, CODE_ALL_VENTA);
-        matcher.addURI(authority, crediFastContract.PATH_VENTA + "/#", CODE_SINGLE_VENTA);
+        matcher.addURI(authority, credifastContract.PATH_VENTA, CODE_ALL_VENTA);
+        matcher.addURI(authority, credifastContract.PATH_VENTA + "/#", CODE_SINGLE_VENTA);
 
-        matcher.addURI(authority, crediFastContract.PATH_MARCA, CODE_ALL_MARCA);
-        matcher.addURI(authority, crediFastContract.PATH_MARCA + "/#", CODE_SINGLE_MARCA);
+        matcher.addURI(authority, credifastContract.PATH_MARCA, CODE_ALL_MARCA);
+        matcher.addURI(authority, credifastContract.PATH_MARCA + "/#", CODE_SINGLE_MARCA);
 
-        matcher.addURI(authority, crediFastContract.PATH_VENTA_MARCA, CODE_ALL_VENTA_MARCA);
-        matcher.addURI(authority, crediFastContract.PATH_VENTA_MARCA + "/#", CODE_SINGLE_VENTA_MARCA);
+        matcher.addURI(authority, credifastContract.PATH_VENTA_MARCA, CODE_ALL_VENTA_MARCA);
+        matcher.addURI(authority, credifastContract.PATH_VENTA_MARCA + "/#", CODE_SINGLE_VENTA_MARCA);
 
-        matcher.addURI(authority, crediFastContract.PATH_FACEBOOK_USER, CODE_ALL_FACEBOOK_USER);
-        matcher.addURI(authority, crediFastContract.PATH_FACEBOOK_USER + "/#", CODE_SINGLE_FACEBOOK_USER);
+        matcher.addURI(authority, credifastContract.PATH_FACEBOOK_USER, CODE_ALL_FACEBOOK_USER);
+        matcher.addURI(authority, credifastContract.PATH_FACEBOOK_USER + "/#", CODE_SINGLE_FACEBOOK_USER);
 
         return matcher;
     }
@@ -86,7 +86,7 @@ public class crediFastProvider extends ContentProvider {
     @Override
     public boolean onCreate() {
         context = getContext();
-        mOpenHelper = new crediFastDatabase(context);
+        mOpenHelper = new credifastDatabase(context);
         return true;
     }
 

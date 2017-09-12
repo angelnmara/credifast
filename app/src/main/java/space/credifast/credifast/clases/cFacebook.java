@@ -3,8 +3,8 @@ package space.credifast.credifast.clases;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
-import android.media.AudioFocusRequest;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,10 +16,11 @@ import com.facebook.GraphResponse;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import space.credifast.credifast.MainActivity;
 import space.credifast.credifast.interfaces.iFacebook;
 import space.credifast.credifast.interfaces.iFacebookUserColumns;
-import space.credifast.credifast.provider.crediFastContract;
-import space.credifast.credifast.provider.crediFastContract.facebook_user;
+import space.credifast.credifast.provider.credifastContract.facebook_user;
+
 
 /**
  * Created by angel on 23/06/2017.
@@ -49,11 +50,6 @@ public class cFacebook implements iFacebook {
     AccessToken accessToken;
     String campos;
     Context context;
-
-    public String getIdFacebook() {
-        return idFacebook;
-    }
-
     String idFacebook;
 
     @Override
@@ -69,11 +65,12 @@ public class cFacebook implements iFacebook {
                             String nameF = object.has("name")?object.getString("name"):"";
                             String emailF = object.has("email")?object.getString("email"):"";
                             String fotoPerfilF = object.has("picture")?object.getJSONObject("picture").getJSONObject("data").getString("url"):"";
+
                             if(!fnVerificaUsuario(IdF)){
                                 contentValues.put(iFacebookUserColumns.FACEBOOK_ID, IdF);
                                 contentValues.put(iFacebookUserColumns.FACEBOOK_NAME, nameF);
                                 contentValues.put(iFacebookUserColumns.FACEBOOK_EMAIL, emailF);
-                                contentValues.put(iFacebookUserColumns.FACEBOOK_FOTO_PERFIL, fotoPerfilF);
+                                contentValues.put(iFacebookUserColumns.FACEBOOK_FOTO_PERFIL_URL, fotoPerfilF);
                                 final Uri uri = contentResolver.insert(facebook_user.CONTENT_URI, contentValues);
                                 idFacebook = facebook_user.getFacebookUserId(uri).toString();
                                 Log.d(TAG, "Usuario se dio de alta con id = " + idFacebook);
@@ -81,6 +78,8 @@ public class cFacebook implements iFacebook {
                             else{
                                 Log.d(TAG, "Usuario existente");
                             }
+                            Intent intent = new Intent(getContext(), MainActivity.class);
+                            context.startActivity(intent);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -95,7 +94,7 @@ public class cFacebook implements iFacebook {
 
     private boolean fnVerificaUsuario(String id){
         boolean existe = false;
-        String[] projection = new String[]{iFacebookUserColumns.FACEBOOK_ID, iFacebookUserColumns.FACEBOOK_NAME, iFacebookUserColumns.FACEBOOK_EMAIL, iFacebookUserColumns.FACEBOOK_FOTO_PERFIL};
+        String[] projection = new String[]{iFacebookUserColumns.FACEBOOK_ID, iFacebookUserColumns.FACEBOOK_NAME, iFacebookUserColumns.FACEBOOK_EMAIL, iFacebookUserColumns.FACEBOOK_FOTO_PERFIL_URL};
         String where = iFacebookUserColumns.FACEBOOK_ID +  "=?";
         String[] vals = new String[]{id};
         Cursor facebookUserCursor = getContext().getContentResolver().query(facebook_user.CONTENT_URI, projection, where, vals, null);
