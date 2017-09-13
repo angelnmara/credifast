@@ -52,6 +52,8 @@ public class cFacebook implements iFacebook {
     Context context;
     String idFacebook;
 
+    cUsuario cu = new cUsuario();
+
     @Override
     public void getMe() {
         graphRequest = GraphRequest.newMeRequest(
@@ -66,7 +68,7 @@ public class cFacebook implements iFacebook {
                             String emailF = object.has("email")?object.getString("email"):"";
                             String fotoPerfilF = object.has("picture")?object.getJSONObject("picture").getJSONObject("data").getString("url"):"";
 
-                            if(!fnVerificaUsuario(IdF)){
+                            if(!cu.fnVerificaExisteUsuarioFB(getContext(), IdF)){
                                 contentValues.put(iFacebookUserColumns.FACEBOOK_ID, IdF);
                                 contentValues.put(iFacebookUserColumns.FACEBOOK_NAME, nameF);
                                 contentValues.put(iFacebookUserColumns.FACEBOOK_EMAIL, emailF);
@@ -92,15 +94,17 @@ public class cFacebook implements iFacebook {
         graphRequest.executeAsync();
     }
 
-    private boolean fnVerificaUsuario(String id){
-        boolean existe = false;
-        String[] projection = new String[]{iFacebookUserColumns.FACEBOOK_ID, iFacebookUserColumns.FACEBOOK_NAME, iFacebookUserColumns.FACEBOOK_EMAIL, iFacebookUserColumns.FACEBOOK_FOTO_PERFIL_URL};
-        String where = iFacebookUserColumns.FACEBOOK_ID +  "=?";
-        String[] vals = new String[]{id};
-        Cursor facebookUserCursor = getContext().getContentResolver().query(facebook_user.CONTENT_URI, projection, where, vals, null);
-        if(facebookUserCursor.getCount()>0){
-            existe=true;
-        }
-        return existe;
+    @Override
+    public boolean isLoggedIn() {
+        AccessToken accessToken = AccessToken.getCurrentAccessToken();
+        return accessToken != null;
     }
+
+    @Override
+    public String getUserId(){
+        AccessToken accessToken = AccessToken.getCurrentAccessToken();
+        return accessToken.getUserId();
+    }
+
+
 }
