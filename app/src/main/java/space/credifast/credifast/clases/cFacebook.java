@@ -4,7 +4,6 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -52,7 +51,7 @@ public class cFacebook implements iFacebook {
     Context context;
     String idFacebook;
 
-    cUsuario cu = new cUsuario();
+    cUsuarioFB cu = new cUsuarioFB();
 
     @Override
     public void getMe() {
@@ -68,7 +67,9 @@ public class cFacebook implements iFacebook {
                             String emailF = object.has("email")?object.getString("email"):"";
                             String fotoPerfilF = object.has("picture")?object.getJSONObject("picture").getJSONObject("data").getString("url"):"";
 
-                            if(!cu.fnVerificaExisteUsuarioFB(getContext(), IdF)){
+                            cu.getUsuarioFB(getContext(), IdF);
+
+                            if(!cu.isExiste()){
                                 contentValues.put(iFacebookUserColumns.FACEBOOK_ID, IdF);
                                 contentValues.put(iFacebookUserColumns.FACEBOOK_NAME, nameF);
                                 contentValues.put(iFacebookUserColumns.FACEBOOK_EMAIL, emailF);

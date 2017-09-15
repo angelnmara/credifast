@@ -1,5 +1,6 @@
 package space.credifast.credifast;
 
+import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -15,8 +16,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 import space.credifast.credifast.clases.cFacebook;
+import space.credifast.credifast.clases.cUsuarioFB;
 import space.credifast.credifast.fragments.facebookFragment;
 
 
@@ -25,6 +28,9 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, facebookFragment.OnFragmentInteractionListener {
 
     private FragmentManager fm = getSupportFragmentManager();
+
+    TextView tvEmail;
+    TextView tvName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,9 +57,17 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        View headerView = navigationView.getHeaderView(0);
+
+        tvEmail = headerView.findViewById(R.id.textViewEmail);
+        tvName = headerView.findViewById(R.id.textViewName);
+
         final cFacebook cf = new cFacebook();
+        final cUsuarioFB cuFB = new cUsuarioFB();
         if(cf.isLoggedIn()){
-            Log.d(cf.getUserId(), "");
+            cuFB.getUsuarioFB(getApplicationContext(), cf.getUserId());
+            tvEmail.setText(cuFB.getFbEmail());
+            tvName.setText(cuFB.getFbName());
         }
 
     }
