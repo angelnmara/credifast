@@ -39,7 +39,7 @@ public class MyCartelera extends RecyclerView.Adapter<MyCartelera.ViewHolder> {
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
         holder.mIdView.setText(mValues.get(position).getNombre());
-        holder.mContentView.setText(mValues.get(position).getVistas());
+        holder.mContentView.setText(String.valueOf(mValues.get(position).getVistas()));
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override

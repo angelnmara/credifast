@@ -10,14 +10,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
+
+import org.json.JSONArray;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import space.credifast.credifast.R;
 import space.credifast.credifast.RecyclerViewAdapter.MyCartelera;
 import space.credifast.credifast.clases.cAnime;
-import space.credifast.credifast.fragments.dummy.DummyContent;
-import space.credifast.credifast.fragments.dummy.DummyContent.DummyItem;
 
 /**
  * A fragment representing a list of Items.
@@ -25,7 +29,7 @@ import space.credifast.credifast.fragments.dummy.DummyContent.DummyItem;
  * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
  * interface.
  */
-public class CarteleraFragment extends Fragment {
+public class CarteleraFragment extends BaseVolleyFragment {
 
     // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
@@ -75,11 +79,31 @@ public class CarteleraFragment extends Fragment {
             }
             List items = new ArrayList();
             items.add(new cAnime(1, "prueba", 123));
-            recyclerView.setAdapter(new MyCartelera(cAnime.ITEMS, mListener));
+            makerequest();
+            recyclerView.setAdapter(new MyCartelera(items, mListener));
         }
         return view;
     }
 
+    String requesta = "";
+
+    private void makerequest(){
+        String url = "http://maps.googleapis.com/maps/api/geocode/json?latlng=39.476245,-0.349448&sensor=true";
+
+        final JsonArrayRequest request = new JsonArrayRequest(url, new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+                requesta = response.toString();
+                onConnectionFinished();
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                onConnectionFailed(error.toString());
+            }
+        });
+        addToQueue(request);
+    }
 
     @Override
     public void onAttach(Context context) {
