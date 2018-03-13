@@ -1,12 +1,10 @@
 package space.credifast.credifast;
 
-import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
-import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -20,12 +18,13 @@ import android.widget.TextView;
 
 import space.credifast.credifast.clases.cFacebook;
 import space.credifast.credifast.clases.cUsuarioFB;
-import space.credifast.credifast.fragments.facebookFragment;
+import space.credifast.credifast.fragments.CarteleraFragment;
+import space.credifast.credifast.fragments.FacebookFragment;
 
 
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, facebookFragment.OnFragmentInteractionListener {
+        implements NavigationView.OnNavigationItemSelectedListener, FacebookFragment.OnFragmentInteractionListener {
 
     private FragmentManager fm = getSupportFragmentManager();
 
@@ -110,11 +109,13 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
+        if (id == R.id.nav_cartelera) {
             // Handle the camera action
+            CarteleraFragment cf = CarteleraFragment.newInstance(0);
+            fm.beginTransaction().replace(R.id.lnlPrincipal, cf, "CarteleraFragment").addToBackStack("CarteleraFragment").commit();
         } else if (id == R.id.nav_gallery) {
-            facebookFragment ff = facebookFragment.newInstance("", "");
-            fm.beginTransaction().replace(R.id.lnlPrincipal, ff, "facebookFragment").addToBackStack("facebookFragment").commit();
+            FacebookFragment ff = FacebookFragment.newInstance("", "");
+            fm.beginTransaction().replace(R.id.lnlPrincipal, ff, "FacebookFragment").addToBackStack("FacebookFragment").commit();
         } else if (id == R.id.nav_slideshow) {
 
         } else if (id == R.id.nav_manage) {

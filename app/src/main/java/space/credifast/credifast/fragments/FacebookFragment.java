@@ -18,17 +18,16 @@ import com.facebook.login.widget.LoginButton;
 
 import space.credifast.credifast.R;
 import space.credifast.credifast.clases.cFacebook;
-import space.credifast.credifast.dialogs.genericDilog;
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link facebookFragment.OnFragmentInteractionListener} interface
+ * {@link FacebookFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link facebookFragment#newInstance} factory method to
+ * Use the {@link FacebookFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class facebookFragment extends Fragment {
+public class FacebookFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -50,7 +49,7 @@ public class facebookFragment extends Fragment {
     TextView editText;
     CallbackManager callbackManager;
 
-    public facebookFragment() {
+    public FacebookFragment() {
         // Required empty public constructor
     }
 
@@ -60,11 +59,11 @@ public class facebookFragment extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment facebookFragment.
+     * @return A new instance of fragment FacebookFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static facebookFragment newInstance(String param1, String param2) {
-        facebookFragment fragment = new facebookFragment();
+    public static FacebookFragment newInstance(String param1, String param2) {
+        FacebookFragment fragment = new FacebookFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
