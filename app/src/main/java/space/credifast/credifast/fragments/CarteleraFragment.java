@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
@@ -93,7 +94,7 @@ public class CarteleraFragment extends BaseVolleyFragment {
     String requesta = "";
 
     private void makerequest(){
-        String url = "http://maps.googleapis.com/maps/api/geocode/json?latlng=39.476245,-0.349448&sensor=true";
+        String url = "http://credifast.space/API/login";
 
         /*final JsonArrayRequest request = new JsonArrayRequest(url, new Response.Listener<JSONArray>() {
             @Override
@@ -108,7 +109,15 @@ public class CarteleraFragment extends BaseVolleyFragment {
             }
         });*/
 
-        final JsonObjectRequest request = new JsonObjectRequest(url, null,
+        JSONObject postparams = new JSONObject();
+        try {
+            postparams.put("usuarioOcorreo", "dave");
+            postparams.put("contrasenna", "maradr");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        final JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, postparams,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
