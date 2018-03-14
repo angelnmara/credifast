@@ -1,23 +1,43 @@
 package space.credifast.credifast.fragments;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import space.credifast.credifast.R;
 import space.credifast.credifast.clases.cFacebook;
+import space.credifast.credifast.clases.cTokenSaver;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -27,7 +47,7 @@ import space.credifast.credifast.clases.cFacebook;
  * Use the {@link FacebookFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class FacebookFragment extends Fragment {
+public class FacebookFragment extends BaseVolleyFragment implements View.OnClickListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -48,6 +68,10 @@ public class FacebookFragment extends Fragment {
     LoginButton loginButton;
     TextView editText;
     CallbackManager callbackManager;
+
+    EditText txtUsuario;
+    EditText txtContrasenna;
+    Button btnAceptar;
 
     public FacebookFragment() {
         // Required empty public constructor
@@ -91,6 +115,13 @@ public class FacebookFragment extends Fragment {
         loginButton.setReadPermissions("email");
         loginButton.setFragment(this);
         editText = (TextView) view.findViewById(R.id.txtSalida);
+
+        /**/
+
+        txtUsuario = (EditText) view.findViewById(R.id.txtUsuario);
+        txtContrasenna = (EditText) view.findViewById(R.id.txtContraseña);
+        btnAceptar = (Button) view.findViewById(R.id.btnAceptar);
+        btnAceptar.setOnClickListener(this);
 
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
@@ -155,5 +186,48 @@ public class FacebookFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    String requesta;
+    StringRequest postRequest;
+
+    public void onClick(View v){
+        switch (v.getId()){
+            case R.id.btnAceptar:{
+
+                String url = "http://credifast.space/API/login";
+                JSONObject postparams = new JSONObject();
+                try {
+                    postparams.put(getResources().getString(R.string.usuarioapi), txtUsuario.getText());
+                    postparams.put(getResources().getString(R.string.contrasennaapi), txtContrasenna.getText());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                final JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, postparams,
+                        new Response.Listener<JSONObject>() {
+                            @Override
+                            public void onResponse(JSONObject response) {
+                                try {
+                                    if(response.has(getResources().getString(R.string.respuestaTokenApi))){
+                                        cTokenSaver.setToken(getContext(), response.getString(getResources().getString(R.string.respuestaTokenApi)));
+                                    }else{
+                                        VolleyLog.v("Response:%n %s", response.toString(4));
+                                        Toast.makeText(getActivity(),"Usuario incorrecto",Toast.LENGTH_LONG).show();
+                                    }
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        VolleyLog.e("Error: ", error.getMessage());
+                        Toast.makeText(getActivity(),"Usuario incorrecto",Toast.LENGTH_LONG).show();
+                    }
+                });
+                addToQueue(request);
+            }
+        }
     }
 }

@@ -11,23 +11,28 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import space.credifast.credifast.R;
 import space.credifast.credifast.RecyclerViewAdapter.MyCartelera;
 import space.credifast.credifast.clases.cAnime;
+import space.credifast.credifast.clases.cTokenSaver;
 
 /**
  * A fragment representing a list of Items.
@@ -94,7 +99,7 @@ public class CarteleraFragment extends BaseVolleyFragment {
     String requesta = "";
 
     private void makerequest(){
-        String url = "http://credifast.space/API/login";
+        String url = "http://credifast.space/API/dbmadeinchiconcuac/tbUsu";
 
         /*final JsonArrayRequest request = new JsonArrayRequest(url, new Response.Listener<JSONArray>() {
             @Override
@@ -109,21 +114,20 @@ public class CarteleraFragment extends BaseVolleyFragment {
             }
         });*/
 
-        JSONObject postparams = new JSONObject();
+        /*JSONObject postparams = new JSONObject();
         try {
-            postparams.put("usuarioOcorreo", "dave");
-            postparams.put("contrasenna", "maradr");
+            postparams.put(getResources().getString(R.string.token), cTokenSaver.getToken(getContext()));
         } catch (JSONException e) {
             e.printStackTrace();
-        }
+        }*/
 
-        final JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, postparams,
-                new Response.Listener<JSONObject>() {
+        final StringRequest request = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
                     @Override
-                    public void onResponse(JSONObject response) {
+                    public void onResponse(String response) {
                         try {
-                            VolleyLog.v("Response:%n %s", response.toString(4));
-                        } catch (JSONException e) {
+                            VolleyLog.v("Response:%n %s", response);
+                        } catch (Exception e) {
                             e.printStackTrace();
                         }
                     }
@@ -132,7 +136,13 @@ public class CarteleraFragment extends BaseVolleyFragment {
             public void onErrorResponse(VolleyError error) {
                 VolleyLog.e("Error: ", error.getMessage());
             }
-        });
+        }){@Override
+        public Map<String, String> getHeaders() throws AuthFailureError {
+            HashMap<String, String> headers = new HashMap<>();
+            headers.put(getResources().getString(R.string.token), cTokenSaver.getToken(getContext()));
+            return headers;
+        }
+        };
 
         addToQueue(request);
     }

@@ -19,4 +19,36 @@
         android:id="@+id/txtSalida"
         android:layout_gravity="bottom"/>
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:orientation="horizontal">
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/txtUsuario"
+            android:hint="@string/usuario"
+            android:textAlignment="center" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/txtContraseña"
+            android:hint="@string/contrase_a"
+            android:textAlignment="center"
+            android:layout_below="@id/txtUsuario"/>
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/txtContraseña"
+            android:id="@+id/btnAceptar"
+            android:text="@string/accept"/>
+
+    </RelativeLayout>
+
 </FrameLayout>
