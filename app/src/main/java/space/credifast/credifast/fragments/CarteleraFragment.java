@@ -26,7 +26,7 @@ import java.util.Map;
 
 import space.credifast.credifast.R;
 import space.credifast.credifast.RecyclerViewAdapter.MyCartelera;
-import space.credifast.credifast.clases.cAnime;
+import space.credifast.credifast.clases.cPeliculas;
 import space.credifast.credifast.clases.cTokenSaver;
 import space.credifast.credifast.interfaces.iTablas;
 import space.credifast.credifast.interfaces.iTbPeliculas;
@@ -109,7 +109,7 @@ public class CarteleraFragment extends BaseVolleyFragment {
                                 int len = jsonArray.length();
                                 for(int i=0; i<len;i++){
                                     JSONObject jsonObject = jsonArray.getJSONObject(i);
-                                    itemsPeliculas.add(new cAnime(jsonObject.getInt(iTbPeliculas.fiIdPelicula), jsonObject.getString(iTbPeliculas.fcPeliculaDesc), 123));
+                                    itemsPeliculas.add(new cPeliculas(jsonObject.getInt(iTbPeliculas.fiIdPelicula), jsonObject.getString(iTbPeliculas.fcPeliculaDesc), 123));
                                 }
                                 recyclerView.setAdapter(new MyCartelera(itemsPeliculas, mListener));
                             }
@@ -162,7 +162,7 @@ public class CarteleraFragment extends BaseVolleyFragment {
      */
     public interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onListFragmentInteraction(cAnime item);
+        void onListFragmentInteraction(cPeliculas item);
     }
 }
 

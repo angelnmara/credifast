@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import space.credifast.credifast.R;
-import space.credifast.credifast.clases.cAnime;
+import space.credifast.credifast.clases.cPeliculas;
 import space.credifast.credifast.fragments.CarteleraFragment.OnListFragmentInteractionListener;
 import space.credifast.credifast.fragments.dummy.DummyContent.DummyItem;
 
@@ -20,10 +20,10 @@ import java.util.List;
  */
 public class MyCartelera extends RecyclerView.Adapter<MyCartelera.ViewHolder> {
 
-    private final List<cAnime> mValues;
+    private final List<cPeliculas> mValues;
     private final OnListFragmentInteractionListener mListener;
 
-    public MyCartelera(List<cAnime> items, OnListFragmentInteractionListener listener) {
+    public MyCartelera(List<cPeliculas> items, OnListFragmentInteractionListener listener) {
         mValues = items;
         mListener = listener;
     }
@@ -38,8 +38,8 @@ public class MyCartelera extends RecyclerView.Adapter<MyCartelera.ViewHolder> {
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
-        holder.mIdView.setText(mValues.get(position).getNombre());
-        holder.mContentView.setText(String.valueOf(mValues.get(position).getVistas()));
+        holder.mIdView.setText(mValues.get(position).getNomPelicula());
+        holder.mContentView.setText(String.valueOf(mValues.get(position).getImgPelicula()));
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -62,7 +62,7 @@ public class MyCartelera extends RecyclerView.Adapter<MyCartelera.ViewHolder> {
         public final View mView;
         public final TextView mIdView;
         public final TextView mContentView;
-        public cAnime mItem;
+        public cPeliculas mItem;
 
         public ViewHolder(View view) {
             super(view);
