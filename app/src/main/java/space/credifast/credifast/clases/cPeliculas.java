@@ -1,8 +1,5 @@
 package space.credifast.credifast.clases;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Created by Qualtop on 12/03/2018.
  */

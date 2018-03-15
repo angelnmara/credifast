@@ -26,11 +26,11 @@ import java.util.List;
 import java.util.Map;
 
 import space.credifast.credifast.R;
-import space.credifast.credifast.RecyclerViewAdapter.MyCartelera;
-import space.credifast.credifast.clases.cPeliculas;
+import space.credifast.credifast.RecyclerViewAdapter.MySucursal;
+import space.credifast.credifast.clases.cSucursales;
 import space.credifast.credifast.clases.cTokenSaver;
 import space.credifast.credifast.interfaces.iTablas;
-import space.credifast.credifast.interfaces.iTbPeliculas;
+import space.credifast.credifast.interfaces.iTbSucursales;
 
 /**
  * A fragment representing a list of Items.
@@ -38,27 +38,27 @@ import space.credifast.credifast.interfaces.iTbPeliculas;
  * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
  * interface.
  */
-public class CarteleraFragment extends BaseVolleyFragment {
+public class SucursalFragment extends BaseVolleyFragment {
 
     // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
     // TODO: Customize parameters
     private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
-    List itemsPeliculas = new ArrayList();
     RecyclerView recyclerView;
+    List itemsSucursales = new ArrayList();
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
-    public CarteleraFragment() {
+    public SucursalFragment() {
     }
 
     // TODO: Customize parameter initialization
     @SuppressWarnings("unused")
-    public static CarteleraFragment newInstance(int columnCount) {
-        CarteleraFragment fragment = new CarteleraFragment();
+    public static SucursalFragment newInstance(int columnCount) {
+        SucursalFragment fragment = new SucursalFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_COLUMN_COUNT, columnCount);
         fragment.setArguments(args);
@@ -77,7 +77,7 @@ public class CarteleraFragment extends BaseVolleyFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_cartelera_list, container, false);
+        View view = inflater.inflate(R.layout.fragment_csucursal_list, container, false);
 
         // Set the adapter
         if (view instanceof RecyclerView) {
@@ -90,14 +90,13 @@ public class CarteleraFragment extends BaseVolleyFragment {
             }
 
             makerequest();
-
         }
         return view;
     }
 
     private void makerequest(){
 
-        String url = getResources().getString(R.string.API) + getResources().getString(R.string.database) +  "/" + iTablas.tbPeliculas;
+        String url = getResources().getString(R.string.API) + getResources().getString(R.string.database) +  "/" + iTablas.tbSucursales;
 
         final JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONObject>() {
@@ -110,9 +109,9 @@ public class CarteleraFragment extends BaseVolleyFragment {
                                 int len = jsonArray.length();
                                 for(int i=0; i<len;i++){
                                     JSONObject jsonObject = jsonArray.getJSONObject(i);
-                                    itemsPeliculas.add(new cPeliculas(jsonObject.getInt(iTbPeliculas.fiIdPelicula), jsonObject.getString(iTbPeliculas.fcPeliculaDesc), 123));
+                                    itemsSucursales.add(new cSucursales(jsonObject.getInt(iTbSucursales.fiIdSucursal), jsonObject.getString(iTbSucursales.fcSucursalDesc), 123));
                                 }
-                                recyclerView.setAdapter(new MyCartelera(itemsPeliculas, mListener));
+                                recyclerView.setAdapter(new MySucursal(itemsSucursales, mListener));
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -134,6 +133,7 @@ public class CarteleraFragment extends BaseVolleyFragment {
 
         addToQueue(request);
     }
+
 
     @Override
     public void onAttach(Context context) {
@@ -164,27 +164,6 @@ public class CarteleraFragment extends BaseVolleyFragment {
      */
     public interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onListFragmentInteraction(cPeliculas item);
+        void onListFragmentInteraction(cSucursales item);
     }
 }
-
-
-/*final JsonArrayRequest request = new JsonArrayRequest(url, new Response.Listener<JSONArray>() {
-            @Override
-            public void onResponse(JSONArray response) {
-                requesta = response.toString();
-                onConnectionFinished();
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                onConnectionFailed(error.toString());
-            }
-        });*/
-
-        /*JSONObject postparams = new JSONObject();
-        try {
-            postparams.put(getResources().getString(R.string.token), cTokenSaver.getToken(getContext()));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }*/

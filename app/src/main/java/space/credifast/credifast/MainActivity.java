@@ -15,16 +15,18 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import space.credifast.credifast.clases.cFacebook;
+import space.credifast.credifast.clases.cPeliculas;
 import space.credifast.credifast.clases.cUsuarioFB;
 import space.credifast.credifast.fragments.CarteleraFragment;
 import space.credifast.credifast.fragments.FacebookFragment;
-
+import space.credifast.credifast.fragments.SucursalFragment;
 
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, FacebookFragment.OnFragmentInteractionListener {
+        implements NavigationView.OnNavigationItemSelectedListener, FacebookFragment.OnFragmentInteractionListener, CarteleraFragment.OnListFragmentInteractionListener {
 
     private FragmentManager fm = getSupportFragmentManager();
 
@@ -134,5 +136,12 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onFragmentInteraction(Uri uri) {
 
+    }
+
+    @Override
+    public void onListFragmentInteraction(cPeliculas item) {
+        Toast.makeText(this, item.getNomPelicula(), Toast.LENGTH_LONG).show();
+        SucursalFragment sf = SucursalFragment.newInstance(0);
+        fm.beginTransaction().replace(R.id.lnlPrincipal, sf, "SucursalFragment").addToBackStack("SucursalFragment").commit();
     }
 }

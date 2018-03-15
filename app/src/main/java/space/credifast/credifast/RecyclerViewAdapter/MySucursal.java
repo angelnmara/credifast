@@ -7,8 +7,9 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import space.credifast.credifast.R;
-import space.credifast.credifast.clases.cPeliculas;
-import space.credifast.credifast.fragments.CarteleraFragment.OnListFragmentInteractionListener;
+import space.credifast.credifast.clases.cSucursales;
+import space.credifast.credifast.fragments.SucursalFragment.OnListFragmentInteractionListener;
+import space.credifast.credifast.fragments.dummy.DummyContent.DummyItem;
 
 import java.util.List;
 
@@ -17,12 +18,12 @@ import java.util.List;
  * specified {@link OnListFragmentInteractionListener}.
  * TODO: Replace the implementation with code for your data type.
  */
-public class MyCartelera extends RecyclerView.Adapter<MyCartelera.ViewHolder> {
+public class MySucursal extends RecyclerView.Adapter<MySucursal.ViewHolder> {
 
-    private final List<cPeliculas> mValues;
+    private final List<cSucursales> mValues;
     private final OnListFragmentInteractionListener mListener;
 
-    public MyCartelera(List<cPeliculas> items, OnListFragmentInteractionListener listener) {
+    public MySucursal(List<cSucursales> items, OnListFragmentInteractionListener listener) {
         mValues = items;
         mListener = listener;
     }
@@ -30,15 +31,15 @@ public class MyCartelera extends RecyclerView.Adapter<MyCartelera.ViewHolder> {
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.fragment_cartelera, parent, false);
+                .inflate(R.layout.fragment_csucursal, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
-        holder.mIdView.setText(mValues.get(position).getNomPelicula());
-        holder.mContentView.setText(String.valueOf(mValues.get(position).getImgPelicula()));
+        holder.mIdView.setText(mValues.get(position).getIdSucursal());
+        holder.mContentView.setText(mValues.get(position).getNomSucursal());
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -61,7 +62,7 @@ public class MyCartelera extends RecyclerView.Adapter<MyCartelera.ViewHolder> {
         public final View mView;
         public final TextView mIdView;
         public final TextView mContentView;
-        public cPeliculas mItem;
+        public cSucursales mItem;
 
         public ViewHolder(View view) {
             super(view);
