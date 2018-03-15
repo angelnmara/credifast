@@ -195,7 +195,7 @@ public class FacebookFragment extends BaseVolleyFragment implements View.OnClick
         switch (v.getId()){
             case R.id.btnAceptar:{
 
-                String url = "http://credifast.space/API/login";
+                String url = getResources().getString(R.string.API) + getResources().getString(R.string.login);
                 JSONObject postparams = new JSONObject();
                 try {
                     postparams.put(getResources().getString(R.string.usuarioapi), txtUsuario.getText());
@@ -213,7 +213,7 @@ public class FacebookFragment extends BaseVolleyFragment implements View.OnClick
                                         cTokenSaver.setToken(getContext(), response.getString(getResources().getString(R.string.respuestaTokenApi)));
                                     }else{
                                         VolleyLog.v("Response:%n %s", response.toString(4));
-                                        Toast.makeText(getActivity(),"Usuario incorrecto",Toast.LENGTH_LONG).show();
+                                        Toast.makeText(getActivity(),getResources().getString(R.string.UsuarioIncorrecto),Toast.LENGTH_LONG).show();
                                     }
                                 } catch (JSONException e) {
                                     e.printStackTrace();
@@ -223,7 +223,7 @@ public class FacebookFragment extends BaseVolleyFragment implements View.OnClick
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         VolleyLog.e("Error: ", error.getMessage());
-                        Toast.makeText(getActivity(),"Usuario incorrecto",Toast.LENGTH_LONG).show();
+                        Toast.makeText(getActivity(),getResources().getString(R.string.UsuarioIncorrecto),Toast.LENGTH_LONG).show();
                     }
                 });
                 addToQueue(request);

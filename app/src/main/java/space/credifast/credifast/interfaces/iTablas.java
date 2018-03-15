@@ -11,4 +11,5 @@ public interface iTablas {
     static final String VENTA = "venta";
     static final String MARCA = "marca";
     static final String VENTA_MARCA = "venta_marca";
+    static final String tbPeliculas = "tbPeliculas";
 }

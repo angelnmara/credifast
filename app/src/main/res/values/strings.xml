@@ -38,5 +38,11 @@
     <string name="respuestaTokenApi">jwt</string>
     <string name="token">token</string>
 
+    <string name="API">http://credifast.space/lamarrullaAPI/</string>
+    <string name="login">login</string>
+    <string name="UsuarioIncorrecto">Usuario Incorrecto</string>
+    <string name="database">dbmadeinchiconcuac</string>
+
+
 
 </resources>

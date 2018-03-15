@@ -2,11 +2,9 @@ package space.credifast.credifast.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,12 +14,9 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
-import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.StringRequest;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -33,6 +28,8 @@ import space.credifast.credifast.R;
 import space.credifast.credifast.RecyclerViewAdapter.MyCartelera;
 import space.credifast.credifast.clases.cAnime;
 import space.credifast.credifast.clases.cTokenSaver;
+import space.credifast.credifast.interfaces.iTablas;
+import space.credifast.credifast.interfaces.iTbPeliculas;
 
 /**
  * A fragment representing a list of Items.
@@ -47,6 +44,8 @@ public class CarteleraFragment extends BaseVolleyFragment {
     // TODO: Customize parameters
     private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
+    List itemsPeliculas = new ArrayList();
+    RecyclerView recyclerView;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -82,51 +81,38 @@ public class CarteleraFragment extends BaseVolleyFragment {
         // Set the adapter
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
-            RecyclerView recyclerView = (RecyclerView) view;
+            recyclerView = (RecyclerView) view;
             if (mColumnCount <= 1) {
                 recyclerView.setLayoutManager(new LinearLayoutManager(context));
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            List items = new ArrayList();
-            items.add(new cAnime(1, "prueba", 123));
+
             makerequest();
-            recyclerView.setAdapter(new MyCartelera(items, mListener));
+
         }
         return view;
     }
 
-    String requesta = "";
-
     private void makerequest(){
-        String url = "http://credifast.space/API/dbmadeinchiconcuac/tbUsu";
 
-        /*final JsonArrayRequest request = new JsonArrayRequest(url, new Response.Listener<JSONArray>() {
-            @Override
-            public void onResponse(JSONArray response) {
-                requesta = response.toString();
-                onConnectionFinished();
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                onConnectionFailed(error.toString());
-            }
-        });*/
+        String url = getResources().getString(R.string.API) + getResources().getString(R.string.database) +  "/" + iTablas.tbPeliculas;
 
-        /*JSONObject postparams = new JSONObject();
-        try {
-            postparams.put(getResources().getString(R.string.token), cTokenSaver.getToken(getContext()));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }*/
-
-        final StringRequest request = new StringRequest(Request.Method.GET, url,
-                new Response.Listener<String>() {
+        final JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
+                new Response.Listener<JSONObject>() {
                     @Override
-                    public void onResponse(String response) {
+                    public void onResponse(JSONObject response) {
                         try {
                             VolleyLog.v("Response:%n %s", response);
+                            JSONArray jsonArray = response.getJSONArray(iTablas.tbPeliculas);
+                            if(jsonArray!=null){
+                                int len = jsonArray.length();
+                                for(int i=0; i<len;i++){
+                                    JSONObject jsonObject = jsonArray.getJSONObject(i);
+                                    itemsPeliculas.add(new cAnime(jsonObject.getInt(iTbPeliculas.fiIdPelicula), jsonObject.getString(iTbPeliculas.fcPeliculaDesc), 123));
+                                }
+                                recyclerView.setAdapter(new MyCartelera(itemsPeliculas, mListener));
+                            }
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -179,3 +165,24 @@ public class CarteleraFragment extends BaseVolleyFragment {
         void onListFragmentInteraction(cAnime item);
     }
 }
+
+
+/*final JsonArrayRequest request = new JsonArrayRequest(url, new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+                requesta = response.toString();
+                onConnectionFinished();
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                onConnectionFailed(error.toString());
+            }
+        });*/
+
+        /*JSONObject postparams = new JSONObject();
+        try {
+            postparams.put(getResources().getString(R.string.token), cTokenSaver.getToken(getContext()));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }*/
