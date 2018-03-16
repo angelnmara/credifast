@@ -104,7 +104,7 @@ public class SucursalFragment extends BaseVolleyFragment {
                     public void onResponse(JSONObject response) {
                         try {
                             VolleyLog.v("Response:%n %s", response);
-                            JSONArray jsonArray = response.getJSONArray(iTablas.tbPeliculas);
+                            JSONArray jsonArray = response.getJSONArray(iTablas.tbSucursales);
                             if(jsonArray!=null){
                                 int len = jsonArray.length();
                                 for(int i=0; i<len;i++){
@@ -138,12 +138,12 @@ public class SucursalFragment extends BaseVolleyFragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnListFragmentInteractionListener) {
+        /*if (context instanceof OnListFragmentInteractionListener) {
             mListener = (OnListFragmentInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnListFragmentInteractionListener");
-        }
+        }*/
     }
 
     @Override

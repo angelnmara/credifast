@@ -38,7 +38,7 @@ public class MySucursal extends RecyclerView.Adapter<MySucursal.ViewHolder> {
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
-        holder.mIdView.setText(mValues.get(position).getIdSucursal());
+        holder.mIdView.setText(String.valueOf(mValues.get(position).getIdSucursal()));
         holder.mContentView.setText(mValues.get(position).getNomSucursal());
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
