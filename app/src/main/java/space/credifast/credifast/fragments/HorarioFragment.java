@@ -26,11 +26,13 @@ import java.util.List;
 import java.util.Map;
 
 import space.credifast.credifast.R;
-import space.credifast.credifast.RecyclerViewAdapter.MyPeliculas;
-import space.credifast.credifast.clases.cPeliculas;
+import space.credifast.credifast.RecyclerViewAdapter.MyHorario;
+import space.credifast.credifast.clases.cHorarios;
 import space.credifast.credifast.clases.cTokenSaver;
 import space.credifast.credifast.interfaces.iTablas;
+import space.credifast.credifast.interfaces.iTbHoras;
 import space.credifast.credifast.interfaces.iTbPeliculas;
+import space.credifast.credifast.interfaces.iTbSucursales;
 
 /**
  * A fragment representing a list of Items.
@@ -38,29 +40,33 @@ import space.credifast.credifast.interfaces.iTbPeliculas;
  * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
  * interface.
  */
-public class PeliculasFragment extends BaseVolleyFragment {
+public class HorarioFragment extends BaseVolleyFragment {
 
     // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
+    private static final String ARG_idPelicula = "idPelicula";
+    private static final String ARG_idSucursal = "idSucursal";
     // TODO: Customize parameters
     private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
-    List itemsPeliculas = new ArrayList();
+    List itemsHorarios = new ArrayList();
     RecyclerView recyclerView;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
-    public PeliculasFragment() {
+    public HorarioFragment() {
     }
 
     // TODO: Customize parameter initialization
     @SuppressWarnings("unused")
-    public static PeliculasFragment newInstance(int columnCount) {
-        PeliculasFragment fragment = new PeliculasFragment();
+    public static HorarioFragment newInstance(int columnCount, int idPelicula, int idSucursal) {
+        HorarioFragment fragment = new HorarioFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_COLUMN_COUNT, columnCount);
+        args.putInt(ARG_idPelicula, idPelicula);
+        args.putInt(ARG_idSucursal, idSucursal);
         fragment.setArguments(args);
         return fragment;
     }
@@ -77,28 +83,28 @@ public class PeliculasFragment extends BaseVolleyFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_cartelera_list, container, false);
+        View view = inflater.inflate(R.layout.fragment_horario_list, container, false);
 
         // Set the adapter
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
-            recyclerView = (RecyclerView) view;
+            RecyclerView recyclerView = (RecyclerView) view;
             if (mColumnCount <= 1) {
                 recyclerView.setLayoutManager(new LinearLayoutManager(context));
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
+            //recyclerView.setAdapter(new MyHorario(DummyContent.ITEMS, mListener));
 
             makerequest();
-
         }
         return view;
     }
 
     private void makerequest(){
 
-        String url = getResources().getString(R.string.API) + getResources().getString(R.string.database) +  "/" + iTablas.tbPeliculas;
-        itemsPeliculas.clear();
+        String url = getResources().getString(R.string.API) + getResources().getString(R.string.database) + "/sp/" + getResources().getString(R.string.GetHorariosXPeliculaXSucursal) + "/" + getArguments().getInt(ARG_idPelicula) + "," + getArguments().getInt(ARG_idSucursal);
+        itemsHorarios.clear();
 
         final JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONObject>() {
@@ -106,24 +112,17 @@ public class PeliculasFragment extends BaseVolleyFragment {
                     public void onResponse(JSONObject response) {
                         try {
                             VolleyLog.v("Response:%n %s", response);
-                            JSONArray jsonArray = response.getJSONArray(iTablas.tbPeliculas);
+                            JSONArray jsonArray = response.getJSONArray(getResources().getString(R.string.GetHorariosXPeliculaXSucursal));
                             if(jsonArray!=null){
                                 int len = jsonArray.length();
                                 for(int i=0; i<len;i++){
                                     JSONObject jsonObject = jsonArray.getJSONObject(i);
-                                    itemsPeliculas.add(new cPeliculas(jsonObject.getInt(iTbPeliculas.fiIdPelicula),
-                                            jsonObject.getString(iTbPeliculas.fcPeliculaDesc),
-                                            jsonObject.getInt(iTbPeliculas.fiIdGenero),
-                                            jsonObject.getString(iTbPeliculas.fiPeliculaDuracion),
-                                            jsonObject.getInt(iTbPeliculas.fiIdClasificacion),
-                                            jsonObject.getString(iTbPeliculas.fcPeliculaSinopsis),
-                                            jsonObject.getString(iTbPeliculas.fcPeliculaActores),
-                                            jsonObject.getString(iTbPeliculas.fcPeliculaDirectores),
-                                            jsonObject.getString(iTbPeliculas.fcPeliculaURL),
-                                            jsonObject.getBoolean(iTbPeliculas.fnPeliculaStat)
-                                    ));
+                                    itemsHorarios.add(new cHorarios(jsonObject.getInt(iTbSucursales.fiIdSucursal),
+                                            jsonObject.getInt(iTbPeliculas.fiIdPelicula),
+                                            jsonObject.getInt(iTbHoras.fiIdHora),
+                                            jsonObject.getString(iTbHoras.fdHora)));
                                 }
-                                recyclerView.setAdapter(new MyPeliculas(itemsPeliculas, mListener));
+                                recyclerView.setAdapter(new MyHorario(itemsHorarios, mListener));
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -175,27 +174,6 @@ public class PeliculasFragment extends BaseVolleyFragment {
      */
     public interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onListFragmentInteraction(cPeliculas item);
+        void onListFragmentInteraction(cHorarios item);
     }
 }
-
-
-/*final JsonArrayRequest request = new JsonArrayRequest(url, new Response.Listener<JSONArray>() {
-            @Override
-            public void onResponse(JSONArray response) {
-                requesta = response.toString();
-                onConnectionFinished();
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                onConnectionFailed(error.toString());
-            }
-        });*/
-
-        /*JSONObject postparams = new JSONObject();
-        try {
-            postparams.put(getResources().getString(R.string.token), cTokenSaver.getToken(getContext()));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }*/

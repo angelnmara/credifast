@@ -9,7 +9,8 @@ import android.provider.BaseColumns;
 public interface iTbSucursales extends BaseColumns {
     public static final String fiIdSucursal = "fiIdSucursal";
     public static final String fcSucursalDesc = "fcSucursalDesc";
-    public static final String fcSucursaalLat = "fcSucursaalLat";
-    public static final String fcSucursalLong = "fcSucursalLong";
+    public static final String fcSucursalDir = "fcSucursalDir";
+    public static final String fdSucursalLat = "fdSucursalLat";
+    public static final String fdSucursalLong = "fdSucursalLong";
     public static final String fnSucursalStat = "fnSucursalStat";
 }

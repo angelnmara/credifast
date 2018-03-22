@@ -17,12 +17,12 @@ import java.util.List;
  * specified {@link OnListFragmentInteractionListener}.
  * TODO: Replace the implementation with code for your data type.
  */
-public class MyCartelera extends RecyclerView.Adapter<MyCartelera.ViewHolder> {
+public class MyPeliculas extends RecyclerView.Adapter<MyPeliculas.ViewHolder> {
 
     private final List<cPeliculas> mValues;
     private final OnListFragmentInteractionListener mListener;
 
-    public MyCartelera(List<cPeliculas> items, OnListFragmentInteractionListener listener) {
+    public MyPeliculas(List<cPeliculas> items, OnListFragmentInteractionListener listener) {
         mValues = items;
         mListener = listener;
     }
@@ -37,8 +37,8 @@ public class MyCartelera extends RecyclerView.Adapter<MyCartelera.ViewHolder> {
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
-        holder.mIdView.setText(mValues.get(position).getNomPelicula());
-        holder.mContentView.setText(String.valueOf(mValues.get(position).getImgPelicula()));
+        holder.mIdView.setText(mValues.get(position).getPeliculaDesc());
+        holder.mContentView.setText(mValues.get(position).getPeliculaActores());
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override

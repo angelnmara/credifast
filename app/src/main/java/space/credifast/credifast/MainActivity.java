@@ -1,5 +1,6 @@
 package space.credifast.credifast;
 
+import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -18,20 +19,30 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import space.credifast.credifast.clases.cFacebook;
+import space.credifast.credifast.clases.cHorarios;
 import space.credifast.credifast.clases.cPeliculas;
+import space.credifast.credifast.clases.cSucursales;
 import space.credifast.credifast.clases.cUsuarioFB;
+import space.credifast.credifast.fragments.HorarioFragment;
 import space.credifast.credifast.fragments.PeliculasFragment;
 import space.credifast.credifast.fragments.FacebookFragment;
 import space.credifast.credifast.fragments.SucursalFragment;
 
+import static space.credifast.credifast.clases.cTokenSaver.getIdPelicula;
+
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, FacebookFragment.OnFragmentInteractionListener, PeliculasFragment.OnListFragmentInteractionListener {
+        implements NavigationView.OnNavigationItemSelectedListener,
+        FacebookFragment.OnFragmentInteractionListener,
+        PeliculasFragment.OnListFragmentInteractionListener,
+        SucursalFragment.OnListFragmentInteractionListener,
+        HorarioFragment.OnListFragmentInteractionListener{
 
     private FragmentManager fm = getSupportFragmentManager();
 
     TextView tvEmail;
     TextView tvName;
+    Context context = this;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -140,9 +151,21 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onListFragmentInteraction(cPeliculas item) {
-        Toast.makeText(this, item.getNomPelicula(), Toast.LENGTH_LONG).show();
-        int idSucursal = item.getIdPelicula();
-        SucursalFragment sf = SucursalFragment.newInstance(0,idSucursal);
+        int idPelicula = item.getIdPelicula();
+        SucursalFragment sf = SucursalFragment.newInstance(0,idPelicula);
         fm.beginTransaction().replace(R.id.lnlPrincipal, sf, "SucursalFragment").addToBackStack("SucursalFragment").commit();
+    }
+
+    @Override
+    public void onListFragmentInteraction(cSucursales item) {
+        int idSucursal = item.getIdSucursal();
+        int idPelicula = getIdPelicula(context);
+        HorarioFragment hf = HorarioFragment.newInstance(0, idPelicula, idSucursal);
+        fm.beginTransaction().replace(R.id.lnlPrincipal, hf, "HorarioFragment").addToBackStack("HorarioFragment").commit();
+    }
+
+    @Override
+    public void onListFragmentInteraction(cHorarios item) {
+        Toast.makeText(this, item.getIdHora(), Toast.LENGTH_LONG).show();
     }
 }

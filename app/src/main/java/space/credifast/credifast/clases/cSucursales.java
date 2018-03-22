@@ -6,25 +6,47 @@ package space.credifast.credifast.clases;
 
 public class cSucursales {
     private int idSucursal;
-    private String nomSucursal;
-    private int imgSucursal;
+    private String sucursalDesc;
+    private String sucursalDir;
+    private double sucursalLat;
+    private double sucursalLong;
+    private boolean sucursalStat;
 
-    public cSucursales(int idSucursal, String nomSucursal, int imgSucursal){
+    public cSucursales(int idSucursal,
+                       String sucursalDesc,
+                       String sucursalDir,
+                       double sucursalLat,
+                       double sucursalLong,
+                       boolean sucursalStat){
         this.idSucursal = idSucursal;
-        this.nomSucursal = nomSucursal;
-        this.imgSucursal = imgSucursal;
+        this.sucursalDesc = sucursalDesc;
+        this.sucursalDir = sucursalDir;
+        this.sucursalLat = sucursalLat;
+        this.sucursalLong = sucursalLong;
+        this.sucursalStat = sucursalStat;
     }
 
     public int getIdSucursal() {
         return idSucursal;
     }
 
-    public String getNomSucursal() {
-        return nomSucursal;
+    public String getSucursalDesc() {
+        return sucursalDesc;
     }
 
-    public int getImgSucursal() {
-        return imgSucursal;
+    public String getSucursalDir() {
+        return sucursalDir;
     }
 
+    public double getSucursalLat() {
+        return sucursalLat;
+    }
+
+    public double getSucursalLong() {
+        return sucursalLong;
+    }
+
+    public boolean isSucursalStat() {
+        return sucursalStat;
+    }
 }

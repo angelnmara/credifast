@@ -31,6 +31,8 @@ import space.credifast.credifast.clases.cSucursales;
 import space.credifast.credifast.clases.cTokenSaver;
 import space.credifast.credifast.interfaces.iTbSucursales;
 
+import static space.credifast.credifast.clases.cTokenSaver.setIdPelicula;
+
 /**
  * A fragment representing a list of Items.
  * <p/>
@@ -98,6 +100,8 @@ public class SucursalFragment extends BaseVolleyFragment {
     private void makerequest(){
 
         String url = getResources().getString(R.string.API) + getResources().getString(R.string.database) + "/sp/" + getResources().getString(R.string.GetSucursalesXPeliculaId) + "/" + getArguments().getInt(PeliculaId);
+        setIdPelicula(getContext(), getArguments().getInt(PeliculaId));
+        itemsSucursales.clear();
 
         final JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONObject>() {
@@ -110,7 +114,13 @@ public class SucursalFragment extends BaseVolleyFragment {
                                 int len = jsonArray.length();
                                 for(int i=0; i<len;i++){
                                     JSONObject jsonObject = jsonArray.getJSONObject(i);
-                                    itemsSucursales.add(new cSucursales(jsonObject.getInt(iTbSucursales.fiIdSucursal), jsonObject.getString(iTbSucursales.fcSucursalDesc), 123));
+                                    itemsSucursales.add(new cSucursales(jsonObject.getInt(iTbSucursales.fiIdSucursal),
+                                            jsonObject.getString(iTbSucursales.fcSucursalDesc),
+                                            jsonObject.getString(iTbSucursales.fcSucursalDir),
+                                            jsonObject.getDouble(iTbSucursales.fdSucursalLat),
+                                            jsonObject.getDouble(iTbSucursales.fdSucursalLong),
+                                            true
+                                    ));
                                 }
                                 recyclerView.setAdapter(new MySucursal(itemsSucursales, mListener));
                             }
@@ -139,12 +149,12 @@ public class SucursalFragment extends BaseVolleyFragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        /*if (context instanceof OnListFragmentInteractionListener) {
+        if (context instanceof OnListFragmentInteractionListener) {
             mListener = (OnListFragmentInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnListFragmentInteractionListener");
-        }*/
+        }
     }
 
     @Override
