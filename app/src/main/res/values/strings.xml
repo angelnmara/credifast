@@ -38,11 +38,19 @@
     <string name="respuestaTokenApi">jwt</string>
     <string name="token">token</string>
 
-    <string name="API">http://credifast.space/lamarrullaAPI/</string>
+    <string name="APIipage">http://credifast.space/lamarrullaAPI/</string>
+    <string name="API">http://192.168.11.162/lamarrullaAPI/</string>
+
+    <string name="GetSucursalesXPeliculaId">spGetSucursalesXPeliculaId</string>
+
     <string name="login">login</string>
-    <string name="UsuarioIncorrecto">Usuario Incorrecto</string>
+
     <string name="database">dbmadeinchiconcuac</string>
 
+    /*Mensaajes*/
+    <string name="UsuarioIncorrecto">Usuario Incorrecto</string>
+    <string name="NoPeliculas">No existen peliculas a mostrar</string>
+    <string name="NoSucursales">No existen sucursales a mostrar</string>
 
 
 </resources>

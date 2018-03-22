@@ -29,7 +29,6 @@ import space.credifast.credifast.R;
 import space.credifast.credifast.RecyclerViewAdapter.MySucursal;
 import space.credifast.credifast.clases.cSucursales;
 import space.credifast.credifast.clases.cTokenSaver;
-import space.credifast.credifast.interfaces.iTablas;
 import space.credifast.credifast.interfaces.iTbSucursales;
 
 /**
@@ -42,6 +41,7 @@ public class SucursalFragment extends BaseVolleyFragment {
 
     // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
+    private static final String PeliculaId = "idPelicula";
     // TODO: Customize parameters
     private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
@@ -57,10 +57,11 @@ public class SucursalFragment extends BaseVolleyFragment {
 
     // TODO: Customize parameter initialization
     @SuppressWarnings("unused")
-    public static SucursalFragment newInstance(int columnCount) {
+    public static SucursalFragment newInstance(int columnCount, int idPelicula) {
         SucursalFragment fragment = new SucursalFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_COLUMN_COUNT, columnCount);
+        args.putInt(PeliculaId, idPelicula);
         fragment.setArguments(args);
         return fragment;
     }
@@ -96,7 +97,7 @@ public class SucursalFragment extends BaseVolleyFragment {
 
     private void makerequest(){
 
-        String url = getResources().getString(R.string.API) + getResources().getString(R.string.database) +  "/" + iTablas.tbSucursales;
+        String url = getResources().getString(R.string.API) + getResources().getString(R.string.database) + "/sp/" + getResources().getString(R.string.GetSucursalesXPeliculaId) + "/" + getArguments().getInt(PeliculaId);
 
         final JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONObject>() {
@@ -104,7 +105,7 @@ public class SucursalFragment extends BaseVolleyFragment {
                     public void onResponse(JSONObject response) {
                         try {
                             VolleyLog.v("Response:%n %s", response);
-                            JSONArray jsonArray = response.getJSONArray(iTablas.tbSucursales);
+                            JSONArray jsonArray = response.getJSONArray(getResources().getString(R.string.GetSucursalesXPeliculaId));
                             if(jsonArray!=null){
                                 int len = jsonArray.length();
                                 for(int i=0; i<len;i++){
@@ -121,7 +122,7 @@ public class SucursalFragment extends BaseVolleyFragment {
             @Override
             public void onErrorResponse(VolleyError error) {
                 VolleyLog.e("Error: ", error.getMessage());
-                Toast.makeText(getContext(), error.getMessage(), Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(), getResources().getString(R.string.NoSucursales), Toast.LENGTH_LONG).show();
             }
         }){@Override
         public Map<String, String> getHeaders() throws AuthFailureError {

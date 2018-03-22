@@ -20,13 +20,13 @@ import android.widget.Toast;
 import space.credifast.credifast.clases.cFacebook;
 import space.credifast.credifast.clases.cPeliculas;
 import space.credifast.credifast.clases.cUsuarioFB;
-import space.credifast.credifast.fragments.CarteleraFragment;
+import space.credifast.credifast.fragments.PeliculasFragment;
 import space.credifast.credifast.fragments.FacebookFragment;
 import space.credifast.credifast.fragments.SucursalFragment;
 
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, FacebookFragment.OnFragmentInteractionListener, CarteleraFragment.OnListFragmentInteractionListener {
+        implements NavigationView.OnNavigationItemSelectedListener, FacebookFragment.OnFragmentInteractionListener, PeliculasFragment.OnListFragmentInteractionListener {
 
     private FragmentManager fm = getSupportFragmentManager();
 
@@ -113,8 +113,8 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.nav_cartelera) {
             // Handle the camera action
-            CarteleraFragment cf = CarteleraFragment.newInstance(0);
-            fm.beginTransaction().replace(R.id.lnlPrincipal, cf, "CarteleraFragment").addToBackStack("CarteleraFragment").commit();
+            PeliculasFragment cf = PeliculasFragment.newInstance(0);
+            fm.beginTransaction().replace(R.id.lnlPrincipal, cf, "PeliculasFragment").addToBackStack("PeliculasFragment").commit();
         } else if (id == R.id.nav_gallery) {
             FacebookFragment ff = FacebookFragment.newInstance("", "");
             fm.beginTransaction().replace(R.id.lnlPrincipal, ff, "FacebookFragment").addToBackStack("FacebookFragment").commit();
@@ -141,7 +141,8 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onListFragmentInteraction(cPeliculas item) {
         Toast.makeText(this, item.getNomPelicula(), Toast.LENGTH_LONG).show();
-        SucursalFragment sf = SucursalFragment.newInstance(0);
+        int idSucursal = item.getIdPelicula();
+        SucursalFragment sf = SucursalFragment.newInstance(0,idSucursal);
         fm.beginTransaction().replace(R.id.lnlPrincipal, sf, "SucursalFragment").addToBackStack("SucursalFragment").commit();
     }
 }

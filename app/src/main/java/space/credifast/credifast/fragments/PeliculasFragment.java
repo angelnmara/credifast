@@ -38,7 +38,7 @@ import space.credifast.credifast.interfaces.iTbPeliculas;
  * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
  * interface.
  */
-public class CarteleraFragment extends BaseVolleyFragment {
+public class PeliculasFragment extends BaseVolleyFragment {
 
     // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
@@ -52,13 +52,13 @@ public class CarteleraFragment extends BaseVolleyFragment {
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
-    public CarteleraFragment() {
+    public PeliculasFragment() {
     }
 
     // TODO: Customize parameter initialization
     @SuppressWarnings("unused")
-    public static CarteleraFragment newInstance(int columnCount) {
-        CarteleraFragment fragment = new CarteleraFragment();
+    public static PeliculasFragment newInstance(int columnCount) {
+        PeliculasFragment fragment = new PeliculasFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_COLUMN_COUNT, columnCount);
         fragment.setArguments(args);
@@ -98,6 +98,7 @@ public class CarteleraFragment extends BaseVolleyFragment {
     private void makerequest(){
 
         String url = getResources().getString(R.string.API) + getResources().getString(R.string.database) +  "/" + iTablas.tbPeliculas;
+        itemsPeliculas.clear();
 
         final JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONObject>() {

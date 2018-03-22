@@ -8,7 +8,7 @@ import android.widget.TextView;
 
 import space.credifast.credifast.R;
 import space.credifast.credifast.clases.cPeliculas;
-import space.credifast.credifast.fragments.CarteleraFragment.OnListFragmentInteractionListener;
+import space.credifast.credifast.fragments.PeliculasFragment.OnListFragmentInteractionListener;
 
 import java.util.List;
 

@@ -3,9 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://C:\Codigo\credifast\app\app.iml" filepath="C:\Codigo\credifast\app\app.iml" />
       <module fileurl="file://$PROJECT_DIR$/credifast.iml" filepath="$PROJECT_DIR$/credifast.iml" />
-      <module fileurl="file://C:\Codigo\credifast\credifast.iml" filepath="C:\Codigo\credifast\credifast.iml" />
     </modules>
   </component>
 </project>

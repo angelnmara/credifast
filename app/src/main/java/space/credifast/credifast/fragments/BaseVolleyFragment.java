@@ -12,6 +12,8 @@ import android.widget.Toast;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
+import com.android.volley.RetryPolicy;
+import com.android.volley.VolleyError;
 
 import space.credifast.credifast.R;
 import space.credifast.credifast.clases.cVolley;
@@ -78,7 +80,7 @@ public class BaseVolleyFragment extends Fragment {
             request.setTag(this);
             if(fRequestQueue==null){
                 fRequestQueue = volley.getmRequestQueue();
-                request.setRetryPolicy(new DefaultRetryPolicy(60000, 3, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+                request.setRetryPolicy(new DefaultRetryPolicy(100000, 3, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
             }
             onPreStartConnection();
             fRequestQueue.add(request);
