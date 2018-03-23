@@ -7,8 +7,9 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import space.credifast.credifast.R;
-import space.credifast.credifast.clases.cHorarios;
-import space.credifast.credifast.fragments.HorarioFragment.OnListFragmentInteractionListener;
+import space.credifast.credifast.clases.cHoras;
+import space.credifast.credifast.fragments.HorariosFragment.OnListFragmentInteractionListener;
+import space.credifast.credifast.fragments.dummy.DummyContent.DummyItem;
 
 import java.util.List;
 
@@ -17,12 +18,14 @@ import java.util.List;
  * specified {@link OnListFragmentInteractionListener}.
  * TODO: Replace the implementation with code for your data type.
  */
-public class MyHorario extends RecyclerView.Adapter<MyHorario.ViewHolder> {
+public class MyHoras extends RecyclerView.Adapter<MyHoras.ViewHolder> {
 
-    private final List<cHorarios> mValues;
+    private final List<cHoras> mValues;
     private final OnListFragmentInteractionListener mListener;
 
-    public MyHorario(List<cHorarios> items, OnListFragmentInteractionListener listener) {
+
+
+    public MyHoras(List<cHoras> items, OnListFragmentInteractionListener listener) {
         mValues = items;
         mListener = listener;
     }
@@ -30,14 +33,14 @@ public class MyHorario extends RecyclerView.Adapter<MyHorario.ViewHolder> {
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.fragment_horario, parent, false);
+                .inflate(R.layout.fragment_horas, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
-        holder.mIdView.setText(mValues.get(position).getIdSucursal());
+        holder.mIdView.setText(mValues.get(position).getSalaNom());
         holder.mContentView.setText(mValues.get(position).getFdHora());
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
@@ -61,7 +64,7 @@ public class MyHorario extends RecyclerView.Adapter<MyHorario.ViewHolder> {
         public final View mView;
         public final TextView mIdView;
         public final TextView mContentView;
-        public cHorarios mItem;
+        public cHoras mItem;
 
         public ViewHolder(View view) {
             super(view);

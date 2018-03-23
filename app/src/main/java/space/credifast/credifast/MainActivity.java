@@ -19,11 +19,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import space.credifast.credifast.clases.cFacebook;
-import space.credifast.credifast.clases.cHorarios;
+import space.credifast.credifast.clases.cHoras;
 import space.credifast.credifast.clases.cPeliculas;
 import space.credifast.credifast.clases.cSucursales;
 import space.credifast.credifast.clases.cUsuarioFB;
-import space.credifast.credifast.fragments.HorarioFragment;
+import space.credifast.credifast.fragments.HorariosFragment;
 import space.credifast.credifast.fragments.PeliculasFragment;
 import space.credifast.credifast.fragments.FacebookFragment;
 import space.credifast.credifast.fragments.SucursalFragment;
@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity
         FacebookFragment.OnFragmentInteractionListener,
         PeliculasFragment.OnListFragmentInteractionListener,
         SucursalFragment.OnListFragmentInteractionListener,
-        HorarioFragment.OnListFragmentInteractionListener{
+        HorariosFragment.OnListFragmentInteractionListener{
 
     private FragmentManager fm = getSupportFragmentManager();
 
@@ -160,12 +160,12 @@ public class MainActivity extends AppCompatActivity
     public void onListFragmentInteraction(cSucursales item) {
         int idSucursal = item.getIdSucursal();
         int idPelicula = getIdPelicula(context);
-        HorarioFragment hf = HorarioFragment.newInstance(0, idPelicula, idSucursal);
-        fm.beginTransaction().replace(R.id.lnlPrincipal, hf, "HorarioFragment").addToBackStack("HorarioFragment").commit();
+        HorariosFragment hf = HorariosFragment.newInstance(0, idSucursal, idPelicula);
+        fm.beginTransaction().replace(R.id.lnlPrincipal, hf, "HorariosFragment").addToBackStack("HorariosFragment").commit();
     }
 
     @Override
-    public void onListFragmentInteraction(cHorarios item) {
-        Toast.makeText(this, item.getIdHora(), Toast.LENGTH_LONG).show();
+    public void onListFragmentInteraction(cHoras item) {
+        Toast.makeText(context, "hora", Toast.LENGTH_LONG).show();
     }
 }

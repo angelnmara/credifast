@@ -3,11 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/list"
-    android:name="space.credifast.credifast.fragments.HorarioFragment"
+    android:name="space.credifast.credifast.fragments.HorariosFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_marginLeft="16dp"
     android:layout_marginRight="16dp"
     app:layoutManager="LinearLayoutManager"
-    tools:context="space.credifast.credifast.fragments.HorarioFragment"
-    tools:listitem="@layout/fragment_horario" />
+    tools:context="space.credifast.credifast.fragments.HorariosFragment"
+    tools:listitem="@layout/fragment_horas" />
