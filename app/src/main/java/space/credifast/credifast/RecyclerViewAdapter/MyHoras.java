@@ -9,7 +9,6 @@ import android.widget.TextView;
 import space.credifast.credifast.R;
 import space.credifast.credifast.clases.cHoras;
 import space.credifast.credifast.fragments.HorariosFragment.OnListFragmentInteractionListener;
-import space.credifast.credifast.fragments.dummy.DummyContent.DummyItem;
 
 import java.util.List;
 

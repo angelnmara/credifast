@@ -26,15 +26,10 @@ import java.util.List;
 import java.util.Map;
 
 import space.credifast.credifast.R;
-import space.credifast.credifast.RecyclerViewAdapter.MyHoras;
-import space.credifast.credifast.clases.cHoras;
+import space.credifast.credifast.RecyclerViewAdapter.MyButacas;
+import space.credifast.credifast.clases.cButacas;
 import space.credifast.credifast.clases.cTokenSaver;
-import space.credifast.credifast.interfaces.iTbHoras;
-import space.credifast.credifast.interfaces.iTbPeliculas;
-import space.credifast.credifast.interfaces.iTbSalas;
-import space.credifast.credifast.interfaces.iTbSucursales;
-
-import static space.credifast.credifast.clases.cTokenSaver.setIdSucursal;
+import space.credifast.credifast.interfaces.iTbSalasButacas;
 
 /**
  * A fragment representing a list of Items.
@@ -42,37 +37,42 @@ import static space.credifast.credifast.clases.cTokenSaver.setIdSucursal;
  * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
  * interface.
  */
-public class HorariosFragment extends BaseVolleyFragment {
+public class ButacasFragment extends BaseVolleyFragment {
 
     // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
-    private static final String ARG_idSucursal = "idSucursal";
     private static final String ARG_idPelicula = "idPelicula";
+    private static final String ARG_idSucursal = "idSucursal";
+    private static final String ARG_idSala = "idSala";
+    private static final String ARG_idHora = "idHora";
     // TODO: Customize parameters
     private int mColumnCount = 1;
     private int mIdPelicula;
-    private int mIdSucursal;
+    private int mIdSurucsal;
+    private int mIdSala;
+    private int mIdHora;
     private OnListFragmentInteractionListener mListener;
 
-    List itemsHoras = new ArrayList();
     RecyclerView recyclerView;
-
+    List itemsButacas = new ArrayList();
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
-    public HorariosFragment() {
+    public ButacasFragment() {
     }
 
     // TODO: Customize parameter initialization
     @SuppressWarnings("unused")
-    public static HorariosFragment newInstance(int columnCount, int idSucursal, int idPelicula) {
-        HorariosFragment fragment = new HorariosFragment();
+    public static ButacasFragment newInstance(int columnCount, int idPelicula, int idSucursal, int idSala, int idHora) {
+        ButacasFragment fragment = new ButacasFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_COLUMN_COUNT, columnCount);
         args.putInt(ARG_idPelicula, idPelicula);
         args.putInt(ARG_idSucursal, idSucursal);
+        args.putInt(ARG_idSala, idSala);
+        args.putInt(ARG_idHora, idHora);
         fragment.setArguments(args);
         return fragment;
     }
@@ -84,34 +84,39 @@ public class HorariosFragment extends BaseVolleyFragment {
         if (getArguments() != null) {
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
             mIdPelicula = getArguments().getInt(ARG_idPelicula);
-            mIdSucursal = getArguments().getInt(ARG_idSucursal);
+            mIdSurucsal = getArguments().getInt(ARG_idSucursal);
+            mIdSala = getArguments().getInt(ARG_idSala);
+            mIdHora = getArguments().getInt(ARG_idHora);
         }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_horas_list, container, false);
+        View view = inflater.inflate(R.layout.fragment_butacas_list, container, false);
+
+        RecyclerView rv = view.findViewById(R.id.list);
 
         // Set the adapter
-        if (view instanceof RecyclerView) {
-            Context context = view.getContext();
-            recyclerView = (RecyclerView) view;
+        if (rv instanceof RecyclerView) {
+            Context context = rv.getContext();
+            recyclerView = (RecyclerView) rv;
             if (mColumnCount <= 1) {
                 recyclerView.setLayoutManager(new LinearLayoutManager(context));
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
+
             makerequest();
+
         }
         return view;
     }
 
     private void makerequest(){
 
-        String url = getResources().getString(R.string.API) + getResources().getString(R.string.database) + "/sp/" + getResources().getString(R.string.GetHorariosXPeliculaXSucursal) + "/" + mIdPelicula + "," + mIdSucursal;
-        setIdSucursal(getContext(), mIdSucursal);
-        itemsHoras.clear();
+        String url = getResources().getString(R.string.API) + getResources().getString(R.string.database) + "/sp/" + getResources().getString(R.string.GetButacas) + "/" + mIdPelicula + "," + mIdSurucsal + "," + mIdSala + "," + mIdHora;
+        itemsButacas.clear();
 
         final JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONObject>() {
@@ -124,15 +129,13 @@ public class HorariosFragment extends BaseVolleyFragment {
                                 int len = jsonArray.length();
                                 for(int i=0; i<len;i++){
                                     JSONObject jsonObject = jsonArray.getJSONObject(i);
-                                    itemsHoras.add(new cHoras(jsonObject.getInt(iTbSucursales.fiIdSucursal),
-                                            jsonObject.getInt(iTbPeliculas.fiIdPelicula),
-                                            jsonObject.getInt(iTbHoras.fiIdHora),
-                                            jsonObject.getString(iTbHoras.fdHora),
-                                            jsonObject.getString(iTbSalas.fcSalaNom),
-                                            jsonObject.getInt(iTbSalas.fiIdSala)
+                                    itemsButacas.add(new cButacas(jsonObject.getInt(iTbSalasButacas.fiIdSalaButaca),
+                                            jsonObject.getString(iTbSalasButacas.fcSalaButacaFila),
+                                            jsonObject.getInt(iTbSalasButacas.fiSalaButacaColumna),
+                                            jsonObject.getInt("Vendido")
                                     ));
                                 }
-                                recyclerView.setAdapter(new MyHoras(itemsHoras, mListener));
+                                recyclerView.setAdapter(new MyButacas(itemsButacas, mListener));
 
                             }
                         } catch (Exception e) {
@@ -159,12 +162,12 @@ public class HorariosFragment extends BaseVolleyFragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnListFragmentInteractionListener) {
+        /*if (context instanceof OnListFragmentInteractionListener) {
             mListener = (OnListFragmentInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnListFragmentInteractionListener");
-        }
+        }*/
     }
 
     @Override
@@ -185,6 +188,6 @@ public class HorariosFragment extends BaseVolleyFragment {
      */
     public interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onListFragmentInteraction(cHoras item);
+        void onListFragmentInteraction(cButacas item);
     }
 }

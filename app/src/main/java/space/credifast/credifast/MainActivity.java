@@ -23,12 +23,14 @@ import space.credifast.credifast.clases.cHoras;
 import space.credifast.credifast.clases.cPeliculas;
 import space.credifast.credifast.clases.cSucursales;
 import space.credifast.credifast.clases.cUsuarioFB;
+import space.credifast.credifast.fragments.ButacasFragment;
 import space.credifast.credifast.fragments.HorariosFragment;
 import space.credifast.credifast.fragments.PeliculasFragment;
 import space.credifast.credifast.fragments.FacebookFragment;
 import space.credifast.credifast.fragments.SucursalFragment;
 
 import static space.credifast.credifast.clases.cTokenSaver.getIdPelicula;
+import static space.credifast.credifast.clases.cTokenSaver.getIdSucursal;
 
 
 public class MainActivity extends AppCompatActivity
@@ -159,13 +161,16 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onListFragmentInteraction(cSucursales item) {
         int idSucursal = item.getIdSucursal();
-        int idPelicula = getIdPelicula(context);
-        HorariosFragment hf = HorariosFragment.newInstance(0, idSucursal, idPelicula);
+        int mIdPelicula = getIdPelicula(context);
+        HorariosFragment hf = HorariosFragment.newInstance(0, idSucursal, mIdPelicula);
         fm.beginTransaction().replace(R.id.lnlPrincipal, hf, "HorariosFragment").addToBackStack("HorariosFragment").commit();
     }
 
     @Override
     public void onListFragmentInteraction(cHoras item) {
-        Toast.makeText(context, "hora", Toast.LENGTH_LONG).show();
+        int mIdPelicula = getIdPelicula(context);
+        int mIdSucursal = getIdSucursal(context);
+        ButacasFragment bf = ButacasFragment.newInstance(0, mIdPelicula, mIdSucursal, item.getIdSala(), item.getIdHora());
+        fm.beginTransaction().replace(R.id.lnlPrincipal, bf, "ButacasFragment").addToBackStack("ButacasFragment").commit();
     }
 }

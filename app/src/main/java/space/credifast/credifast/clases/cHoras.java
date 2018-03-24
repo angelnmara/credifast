@@ -10,13 +10,19 @@ public class cHoras {
     private int idHora;
     private String fdHora;
     private String salaNom;
+    private int idSala;
 
-    public cHoras(int idSucursal, int idPelicula, int idHora, String fdHora, String salaNom){
+    public cHoras(int idSucursal, int idPelicula, int idHora, String fdHora, String salaNom, int idSala){
         this.idSucursal = idSucursal;
         this.idPelicula = idPelicula;
         this.idHora = idHora;
         this.fdHora = fdHora;
         this.salaNom = salaNom;
+        this.idSala = idSala;
+    }
+
+    public int getIdSala() {
+        return idSala;
     }
 
     public int getIdSucursal() {

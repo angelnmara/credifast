@@ -1,14 +1,16 @@
 package space.credifast.credifast.RecyclerViewAdapter;
 
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import space.credifast.credifast.R;
-import space.credifast.credifast.clases.cSucursales;
-import space.credifast.credifast.fragments.SucursalFragment.OnListFragmentInteractionListener;
+import space.credifast.credifast.clases.cButacas;
+import space.credifast.credifast.fragments.ButacasFragment.OnListFragmentInteractionListener;
 
 import java.util.List;
 
@@ -17,12 +19,12 @@ import java.util.List;
  * specified {@link OnListFragmentInteractionListener}.
  * TODO: Replace the implementation with code for your data type.
  */
-public class MySucursal extends RecyclerView.Adapter<MySucursal.ViewHolder> {
+public class MyButacas extends RecyclerView.Adapter<MyButacas.ViewHolder> {
 
-    private final List<cSucursales> mValues;
+    private final List<cButacas> mValues;
     private final OnListFragmentInteractionListener mListener;
 
-    public MySucursal(List<cSucursales> items, OnListFragmentInteractionListener listener) {
+    public MyButacas(List<cButacas> items, OnListFragmentInteractionListener listener) {
         mValues = items;
         mListener = listener;
     }
@@ -30,24 +32,27 @@ public class MySucursal extends RecyclerView.Adapter<MySucursal.ViewHolder> {
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.fragment_csucursal, parent, false);
+                .inflate(R.layout.fragment_butacas, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
-        holder.mIdView.setText(String.valueOf(mValues.get(position).getIdSucursal()));
-        holder.mContentView.setText(mValues.get(position).getSucursalDesc());
+        holder.mIdView.setText(mValues.get(position).getSalaButacaFila());
+        holder.mContentView.setText(String.valueOf(mValues.get(position).getSalaButacaColumna()));
+        holder.mView.setBackgroundColor(holder.mItem.isSelected() ? Color.CYAN : Color.WHITE);
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (null != mListener) {
+                holder.mItem.setSelected(!holder.mItem.isSelected());
+                holder.mView.setBackgroundColor(holder.mItem.isSelected() ? Color.CYAN : Color.WHITE);
+                /*if (null != mListener) {
                     // Notify the active callbacks interface (the activity, if the
                     // fragment is attached to one) that an item has been selected.
                     mListener.onListFragmentInteraction(holder.mItem);
-                }
+                }*/
             }
         });
     }
@@ -61,7 +66,7 @@ public class MySucursal extends RecyclerView.Adapter<MySucursal.ViewHolder> {
         public final View mView;
         public final TextView mIdView;
         public final TextView mContentView;
-        public cSucursales mItem;
+        public cButacas mItem;
 
         public ViewHolder(View view) {
             super(view);
