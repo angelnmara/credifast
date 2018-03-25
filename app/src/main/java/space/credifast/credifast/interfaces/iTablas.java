@@ -15,4 +15,6 @@ public interface iTablas {
     static final String tbSucursales = "tbSucursales";
     static final String tbHoras = "tbHoras";
     static final String tbSalasButacas = "tbSalasButacas";
+    static final String tbSalas = "tbSalas";
+    static final String tbBoletos = "tbBoletos";
 }

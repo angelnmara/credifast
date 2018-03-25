@@ -11,7 +11,7 @@ public class cTokenSaver {
     private final static String SHARED_PREF_NAME = "space.credifast.credifast.SHARED_PREF_NAME";
     private final static String TOKEN_KEY = "space.credifast.credifast.TOKEN_KEY";
     private final static String idSucursal_KEY = "space.credifast.credifast.idSucursal_KEY";
-    private final static String idPelicula_KEY = "space.credifast.credifast.idSucursal_KEY";
+    private final static String idPelicula_KEY = "space.credifast.credifast.idPelicula_KEY";
 
     public static String getToken(Context c){
         SharedPreferences preferences = c.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);

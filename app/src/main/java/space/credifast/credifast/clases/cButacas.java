@@ -1,5 +1,7 @@
 package space.credifast.credifast.clases;
 
+import java.util.Date;
+
 /**
  * Created by angel on 24/03/2018.
  */
@@ -9,21 +11,24 @@ public class cButacas {
     private String salaButacaFila;
     private int salaButacaColumna;
     private int vendido;
-    private boolean isSelected = false;
+    private int idPeliculaHorario;
+    private String boletoFechaPelicula;
 
-    public cButacas(int idSalaButaca, String salaButacaFila, int salaButacaColumna, int vendido){
+    public cButacas(int idSalaButaca, String salaButacaFila, int salaButacaColumna, int vendido, int idPeliculaHorario, String boletoFechaPelicula){
         this.idSalaButaca = idSalaButaca;
         this.salaButacaFila = salaButacaFila;
         this.salaButacaColumna = salaButacaColumna;
         this.vendido = vendido;
+        this.idPeliculaHorario = idPeliculaHorario;
+        this.boletoFechaPelicula = boletoFechaPelicula;
     }
 
-    public boolean isSelected() {
-        return isSelected;
+    public int getIdPeliculaHorario() {
+        return idPeliculaHorario;
     }
 
-    public void setSelected(boolean selected) {
-        isSelected = selected;
+    public String getBoletoFechaPelicula() {
+        return boletoFechaPelicula;
     }
 
     public int getIdSalaButaca() {
@@ -38,7 +43,11 @@ public class cButacas {
         return salaButacaColumna;
     }
 
-    public int isVendido() {
+    public int getVendido() {
         return vendido;
+    }
+
+    public void setVendido(int vendido) {
+        this.vendido = vendido;
     }
 }

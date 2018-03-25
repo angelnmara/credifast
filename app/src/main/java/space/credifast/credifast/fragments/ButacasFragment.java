@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -22,6 +23,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -29,6 +31,7 @@ import space.credifast.credifast.R;
 import space.credifast.credifast.RecyclerViewAdapter.MyButacas;
 import space.credifast.credifast.clases.cButacas;
 import space.credifast.credifast.clases.cTokenSaver;
+import space.credifast.credifast.interfaces.iTbBoletos;
 import space.credifast.credifast.interfaces.iTbSalasButacas;
 
 /**
@@ -37,7 +40,7 @@ import space.credifast.credifast.interfaces.iTbSalasButacas;
  * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
  * interface.
  */
-public class ButacasFragment extends BaseVolleyFragment {
+public class ButacasFragment extends BaseVolleyFragment implements View.OnClickListener {
 
     // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
@@ -51,7 +54,9 @@ public class ButacasFragment extends BaseVolleyFragment {
     private int mIdSurucsal;
     private int mIdSala;
     private int mIdHora;
-    private OnListFragmentInteractionListener mListener;
+    /*private OnItemClickListener mListener;*/
+
+    Button btnPagar;
 
     RecyclerView recyclerView;
     List itemsButacas = new ArrayList();
@@ -95,6 +100,10 @@ public class ButacasFragment extends BaseVolleyFragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_butacas_list, container, false);
 
+        btnPagar = view.findViewById(R.id.btnComprar);
+
+        btnPagar.setOnClickListener(this);
+
         RecyclerView rv = view.findViewById(R.id.list);
 
         // Set the adapter
@@ -110,6 +119,7 @@ public class ButacasFragment extends BaseVolleyFragment {
             makerequest();
 
         }
+
         return view;
     }
 
@@ -132,10 +142,15 @@ public class ButacasFragment extends BaseVolleyFragment {
                                     itemsButacas.add(new cButacas(jsonObject.getInt(iTbSalasButacas.fiIdSalaButaca),
                                             jsonObject.getString(iTbSalasButacas.fcSalaButacaFila),
                                             jsonObject.getInt(iTbSalasButacas.fiSalaButacaColumna),
-                                            jsonObject.getInt("Vendido")
+                                            jsonObject.getInt("Vendido"),
+                                            jsonObject.getInt(iTbBoletos.fiIdPeliculaHorario),
+                                            jsonObject.getString(iTbBoletos.fdBoletoFechaPelicula)
                                     ));
                                 }
-                                recyclerView.setAdapter(new MyButacas(itemsButacas, mListener));
+
+                                recyclerView.setAdapter(new MyButacas(itemsButacas));
+
+                                /*, mListener*/
 
                             }
                         } catch (Exception e) {
@@ -173,7 +188,25 @@ public class ButacasFragment extends BaseVolleyFragment {
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
+        /*mListener = null;*/
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.btnComprar:
+                Iterator it = itemsButacas.iterator();
+                while (it.hasNext()){
+                    Object butacas = it.next();
+                    if(((cButacas) butacas).getVendido()==2){
+                        Toast.makeText(getContext(), ((cButacas) butacas).getSalaButacaFila() + String.valueOf(((cButacas) butacas).getSalaButacaColumna()), Toast.LENGTH_LONG).show();
+                    }
+                }
+                break;
+                default:
+                    Toast.makeText(getContext(), "Opcion no encontrada", Toast.LENGTH_LONG).show();
+                    break;
+        }
     }
 
     /**
@@ -186,8 +219,12 @@ public class ButacasFragment extends BaseVolleyFragment {
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-    public interface OnListFragmentInteractionListener {
+    /*public interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
         void onListFragmentInteraction(cButacas item);
-    }
+    }*/
+
+    /*public interface OnItemClickListener{
+        void onClickLista(cButacas item);
+    }*/
 }

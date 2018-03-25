@@ -1,16 +1,16 @@
 package space.credifast.credifast.RecyclerViewAdapter;
 
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
 import space.credifast.credifast.R;
 import space.credifast.credifast.clases.cButacas;
-import space.credifast.credifast.fragments.ButacasFragment.OnListFragmentInteractionListener;
+/*import space.credifast.credifast.fragments.ButacasFragment.OnItemClickListener;*/
 
 import java.util.List;
 
@@ -22,11 +22,14 @@ import java.util.List;
 public class MyButacas extends RecyclerView.Adapter<MyButacas.ViewHolder> {
 
     private final List<cButacas> mValues;
-    private final OnListFragmentInteractionListener mListener;
+    /*private final OnItemClickListener mListener;*/
 
-    public MyButacas(List<cButacas> items, OnListFragmentInteractionListener listener) {
+    public MyButacas(List<cButacas> items) {
+
+        /*, OnItemClickListener listener*/
+
         mValues = items;
-        mListener = listener;
+        /*mListener = listener;*/
     }
 
     @Override
@@ -41,18 +44,29 @@ public class MyButacas extends RecyclerView.Adapter<MyButacas.ViewHolder> {
         holder.mItem = mValues.get(position);
         holder.mIdView.setText(mValues.get(position).getSalaButacaFila());
         holder.mContentView.setText(String.valueOf(mValues.get(position).getSalaButacaColumna()));
-        holder.mView.setBackgroundColor(holder.mItem.isSelected() ? Color.CYAN : Color.WHITE);
+        holder.mView.setBackgroundColor(holder.mItem.getVendido() == 1 ? Color.CYAN : Color.WHITE);
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View v) {
-                holder.mItem.setSelected(!holder.mItem.isSelected());
-                holder.mView.setBackgroundColor(holder.mItem.isSelected() ? Color.CYAN : Color.WHITE);
-                /*if (null != mListener) {
-                    // Notify the active callbacks interface (the activity, if the
-                    // fragment is attached to one) that an item has been selected.
-                    mListener.onListFragmentInteraction(holder.mItem);
-                }*/
+
+                /*Drawable background = v.getBackground();
+                if (background instanceof ColorDrawable)*/
+
+                int guardaVendido = holder.mItem.getVendido();
+
+                if(guardaVendido != 1){
+                    //holder.mItem.setVendido(!holder.mItem.getVendido());
+                    guardaVendido = ((holder.mItem.getVendido() == 0) ? 2 : 0);
+                    holder.mItem.setVendido(guardaVendido);
+                    holder.mView.setBackgroundColor((guardaVendido == 2) ? Color.MAGENTA : Color.WHITE );
+                    /*if (null != mListener) {
+                        // Notify the active callbacks interface (the activity, if the
+                        // fragment is attached to one) that an item has been selected.
+                        mListener.onClickLista(holder.mItem);
+                    }*/
+                }
             }
         });
     }

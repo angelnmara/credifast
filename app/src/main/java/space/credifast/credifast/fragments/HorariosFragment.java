@@ -34,6 +34,7 @@ import space.credifast.credifast.interfaces.iTbPeliculas;
 import space.credifast.credifast.interfaces.iTbSalas;
 import space.credifast.credifast.interfaces.iTbSucursales;
 
+import static space.credifast.credifast.clases.cTokenSaver.setIdPelicula;
 import static space.credifast.credifast.clases.cTokenSaver.setIdSucursal;
 
 /**
@@ -111,6 +112,7 @@ public class HorariosFragment extends BaseVolleyFragment {
 
         String url = getResources().getString(R.string.API) + getResources().getString(R.string.database) + "/sp/" + getResources().getString(R.string.GetHorariosXPeliculaXSucursal) + "/" + mIdPelicula + "," + mIdSucursal;
         setIdSucursal(getContext(), mIdSucursal);
+        setIdPelicula(getContext(), mIdPelicula);
         itemsHoras.clear();
 
         final JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,

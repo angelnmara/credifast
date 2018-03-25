@@ -56,4 +56,8 @@
     <string name="NoSucursales">No existen sucursales a mostrar</string>
     /*termina Mensaajes*/
 
+    /*Texto en botones*/
+    <string name="comprar">Comprar</string>
+    /*Termina texto en botones*/
+
 </resources>
