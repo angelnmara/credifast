@@ -12,7 +12,33 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/lnlPrincipal"
-        android:orientation="horizontal">
+        android:orientation="vertical">
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/txtMonto"/>
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/txtTasa"/>
+        <android.support.v7.widget.AppCompatSpinner
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/ddlTipoTasa">
+        </android.support.v7.widget.AppCompatSpinner>
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/txtPlazo"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/lblMontoPago"/>
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/calcular"
+            android:id="@+id/btnCalculaMontoPago"/>
     </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>

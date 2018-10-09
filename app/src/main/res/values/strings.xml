@@ -40,6 +40,8 @@
 
     <string name="APIipage">http://credifast.space/lamarrullaAPI/</string>
     <string name="API">http://192.168.1.5/lamarrullaAPI/</string>
+    <string name="apiJava">http://35.229.63.35:8080/lamarrullaWS/rest/%s</string>
+    <string name="lamarrullaAPI">lamarrullaAPI</string>
 
     <string name="login">login</string>
     <string name="database">dbmadeinchiconcuac</string>
@@ -58,6 +60,7 @@
 
     /*Texto en botones*/
     <string name="comprar">Comprar</string>
+    <string name="calcular">Calcular</string>
     /*Termina texto en botones*/
 
 </resources>

@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
+import android.text.InputType;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -15,8 +16,30 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.android.volley.AuthFailureError;
+import com.android.volley.Cache;
+import com.android.volley.Network;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.BasicNetwork;
+import com.android.volley.toolbox.DiskBasedCache;
+import com.android.volley.toolbox.HurlStack;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.JsonRequest;
+import com.android.volley.toolbox.StringRequest;
+
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import space.credifast.credifast.clases.cFacebook;
 import space.credifast.credifast.clases.cHoras;
@@ -46,11 +69,24 @@ public class MainActivity extends AppCompatActivity
     TextView tvName;
     Context context = this;
 
+    RequestQueue mRequestQueue;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        EditText editTextMonto = findViewById(R.id.txtMonto);
+        EditText editTextTasa = findViewById(R.id.txtTasa);
+        Spinner spinnerTipoTasa = findViewById(R.id.ddlTipoTasa);
+        EditText editTextPlazo = findViewById(R.id.txtPlazo);
+        final TextView textViewMontoPago = findViewById(R.id.lblMontoPago);
+        Button buttonMontoPago = findViewById(R.id.btnCalculaMontoPago);
+
+        editTextMonto.setInputType(InputType.TYPE_CLASS_NUMBER + InputType.TYPE_NUMBER_FLAG_DECIMAL);
+        editTextTasa.setInputType(InputType.TYPE_CLASS_NUMBER + InputType.TYPE_NUMBER_FLAG_DECIMAL);
+        editTextPlazo.setInputType(InputType.TYPE_CLASS_NUMBER);
+
         setSupportActionBar(toolbar);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -59,6 +95,45 @@ public class MainActivity extends AppCompatActivity
             public void onClick(View view) {
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
+
+                // Instantiate the cache
+                Cache cache = new DiskBasedCache(getCacheDir(), 1024 * 1024); // 1MB cap
+
+                // Set up the network to use HttpURLConnection as the HTTP client.
+                Network network = new BasicNetwork(new HurlStack());
+
+                // Instantiate the RequestQueue with the cache and network.
+                mRequestQueue = new RequestQueue(cache, network);
+
+// Start the queue
+                mRequestQueue.start();
+
+                String url = String.format(getString(R.string.apiJava), getString(R.string.lamarrullaAPI));
+
+// Formulate the request and handle the response.
+                JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url,null,
+                        new Response.Listener<JSONObject>() {
+                            @Override
+                            public void onResponse(JSONObject response) {
+                                textViewMontoPago.setText(response.toString());
+                            }
+                        },
+                        new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                // Handle error
+                            }
+                        }){
+                    @Override
+                    public Map<String, String> getHeaders() throws AuthFailureError {
+                        Map<String, String> params = new HashMap<String, String>();
+                        params.put("Tabla", "tbPlazo");
+                        return params;
+                    }
+                };
+
+// Add the request to the RequestQueue.
+                mRequestQueue.add(jsonObjectRequest);
             }
         });
 
