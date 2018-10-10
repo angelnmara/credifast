@@ -61,6 +61,9 @@
     /*Texto en botones*/
     <string name="comprar">Comprar</string>
     <string name="calcular">Calcular</string>
+    <string name="monto">Monto</string>
+    <string name="plazo">Plazo</string>
+    <string name="tasa">Tasa</string>
     /*Termina texto en botones*/
 
 </resources>

@@ -47,6 +47,7 @@ import space.credifast.credifast.clases.cPeliculas;
 import space.credifast.credifast.clases.cSucursales;
 import space.credifast.credifast.clases.cUsuarioFB;
 import space.credifast.credifast.clases.Utilerias;
+import space.credifast.credifast.clases.montoPago;
 import space.credifast.credifast.fragments.ButacasFragment;
 import space.credifast.credifast.fragments.HorariosFragment;
 import space.credifast.credifast.fragments.PeliculasFragment;
@@ -73,6 +74,7 @@ public class MainActivity extends AppCompatActivity
     RequestQueue mRequestQueue;
 
     Utilerias ut = new Utilerias();
+    montoPago mp = new montoPago();
 
     EditText editTextMonto;
     EditText editTextTasa;
@@ -93,6 +95,10 @@ public class MainActivity extends AppCompatActivity
         textViewMontoPago = findViewById(R.id.lblMontoPago);
         buttonMontoPago = findViewById(R.id.btnCalculaMontoPago);
 
+        editTextMonto.setHint(R.string.monto);
+        editTextPlazo.setHint(R.string.plazo);
+        editTextTasa.setHint(R.string.tasa);
+
         editTextMonto.setInputType(InputType.TYPE_CLASS_NUMBER + InputType.TYPE_NUMBER_FLAG_DECIMAL);
         editTextTasa.setInputType(InputType.TYPE_CLASS_NUMBER + InputType.TYPE_NUMBER_FLAG_DECIMAL);
         editTextPlazo.setInputType(InputType.TYPE_CLASS_NUMBER);
@@ -105,9 +111,27 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View view) {
                 try{
-                    String name = spinnerTipoTasa.getSelectedItem().toString();
-                    int id = ut.getListMap().get(spinnerTipoTasa.getSelectedItemPosition());
-                    Toast.makeText(context, name + " : " + id, Toast.LENGTH_LONG).show();
+                    String textMonto = editTextMonto.getText().toString();
+                    String textPlazo = editTextPlazo.getText().toString();
+                    String textTasa = editTextTasa.getText().toString();
+                    if(textMonto==null || textMonto.isEmpty()){
+                        Toast.makeText(context, "Monto no puede ser vacio", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    if(textTasa==null||textTasa.isEmpty()){
+                        Toast.makeText(context, "Tasa no puede ser vacio", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    if(textPlazo==null || textPlazo.isEmpty()){
+                        Toast.makeText(context, "Plazo no puede ser vacio", Toast.LENGTH_LONG).show();
+                        return;
+                    }
+                    mp.MontoTotal = Double.parseDouble(textMonto);
+                    mp.Plazo = Integer.valueOf(textPlazo);
+                    mp.Tasa = Double.parseDouble(textTasa);
+                    mp.TipoTaza = ut.getListMap().get(spinnerTipoTasa.getSelectedItemPosition());
+                    mp.calculaMontoPago();
+                    textViewMontoPago.setText(String.valueOf(mp.getMontoPago()));
                 }catch (Exception ex){
                     Toast.makeText(context, "Error generico", Toast.LENGTH_LONG).show();
                 }
