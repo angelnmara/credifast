@@ -34,10 +34,7 @@ import com.android.volley.toolbox.BasicNetwork;
 import com.android.volley.toolbox.DiskBasedCache;
 import com.android.volley.toolbox.HurlStack;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.JsonRequest;
-import com.android.volley.toolbox.StringRequest;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -49,6 +46,7 @@ import space.credifast.credifast.clases.cHoras;
 import space.credifast.credifast.clases.cPeliculas;
 import space.credifast.credifast.clases.cSucursales;
 import space.credifast.credifast.clases.cUsuarioFB;
+import space.credifast.credifast.clases.Utilerias;
 import space.credifast.credifast.fragments.ButacasFragment;
 import space.credifast.credifast.fragments.HorariosFragment;
 import space.credifast.credifast.fragments.PeliculasFragment;
@@ -74,25 +72,47 @@ public class MainActivity extends AppCompatActivity
 
     RequestQueue mRequestQueue;
 
+    Utilerias ut = new Utilerias();
+
+    EditText editTextMonto;
+    EditText editTextTasa;
+    Spinner spinnerTipoTasa;
+    EditText editTextPlazo;
+    TextView textViewMontoPago;
+    Button buttonMontoPago;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        EditText editTextMonto = findViewById(R.id.txtMonto);
-        EditText editTextTasa = findViewById(R.id.txtTasa);
-        final Spinner spinnerTipoTasa = findViewById(R.id.ddlTipoTasa);
-        EditText editTextPlazo = findViewById(R.id.txtPlazo);
-        final TextView textViewMontoPago = findViewById(R.id.lblMontoPago);
-        Button buttonMontoPago = findViewById(R.id.btnCalculaMontoPago);
+        editTextMonto = findViewById(R.id.txtMonto);
+        editTextTasa = findViewById(R.id.txtTasa);
+        spinnerTipoTasa = findViewById(R.id.ddlTipoTasa);
+        editTextPlazo = findViewById(R.id.txtPlazo);
+        textViewMontoPago = findViewById(R.id.lblMontoPago);
+        buttonMontoPago = findViewById(R.id.btnCalculaMontoPago);
 
         editTextMonto.setInputType(InputType.TYPE_CLASS_NUMBER + InputType.TYPE_NUMBER_FLAG_DECIMAL);
         editTextTasa.setInputType(InputType.TYPE_CLASS_NUMBER + InputType.TYPE_NUMBER_FLAG_DECIMAL);
         editTextPlazo.setInputType(InputType.TYPE_CLASS_NUMBER);
 
+        fillDDL();
+
         setSupportActionBar(toolbar);
 
-
+        buttonMontoPago.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try{
+                    String name = spinnerTipoTasa.getSelectedItem().toString();
+                    int id = ut.getListMap().get(spinnerTipoTasa.getSelectedItemPosition());
+                    Toast.makeText(context, name + " : " + id, Toast.LENGTH_LONG).show();
+                }catch (Exception ex){
+                    Toast.makeText(context, "Error generico", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -100,52 +120,6 @@ public class MainActivity extends AppCompatActivity
             public void onClick(View view) {
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
-
-                // Instantiate the cache
-                Cache cache = new DiskBasedCache(getCacheDir(), 1024 * 1024); // 1MB cap
-
-                // Set up the network to use HttpURLConnection as the HTTP client.
-                Network network = new BasicNetwork(new HurlStack());
-
-                // Instantiate the RequestQueue with the cache and network.
-                mRequestQueue = new RequestQueue(cache, network);
-
-// Start the queue
-                mRequestQueue.start();
-
-                String url = String.format(getString(R.string.apiJava), getString(R.string.lamarrullaAPI));
-
-// Formulate the request and handle the response.
-                JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url,null,
-                        new Response.Listener<JSONObject>() {
-                            @Override
-                            public void onResponse(JSONObject response) {
-                                textViewMontoPago.setText(response.toString());
-                                try {
-                                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(context, android.R.layout.simple_spinner_item, fnFillDLL(response.getJSONArray("tbPlazo")));
-                                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                                    spinnerTipoTasa.setAdapter(adapter);
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                        },
-                        new Response.ErrorListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-                                // Handle error
-                            }
-                        }){
-                    @Override
-                    public Map<String, String> getHeaders() throws AuthFailureError {
-                        Map<String, String> params = new HashMap<String, String>();
-                        params.put("Tabla", "tbPlazo");
-                        return params;
-                    }
-                };
-
-// Add the request to the RequestQueue.
-                mRequestQueue.add(jsonObjectRequest);
             }
         });
 
@@ -173,23 +147,56 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-    public String[] fnFillDLL(JSONArray jsa) throws JSONException {
-        Integer MaxSize = 0;
-        String[] items = null;
-        try{
-            for(int i = 0; i < jsa.length(); i++){
-                JSONObject jso = jsa.getJSONObject(i);
-                MaxSize = (MaxSize < jso.getInt("fiidplazo"))?jso.getInt("fiidplazo"):MaxSize;
+    public void fillDDL(){
+        // Instantiate the cache
+        Cache cache = new DiskBasedCache(getCacheDir(), 1024 * 1024); // 1MB cap
+
+        // Set up the network to use HttpURLConnection as the HTTP client.
+        Network network = new BasicNetwork(new HurlStack());
+
+        // Instantiate the RequestQueue with the cache and network.
+        mRequestQueue = new RequestQueue(cache, network);
+
+        // Start the queue
+        mRequestQueue.start();
+
+        String url = String.format(getString(R.string.apiJava), getString(R.string.lamarrullaAPI));
+
+        // Formulate the request and handle the response.
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url,null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        //textViewMontoPago.setText(response.toString());
+                        try {
+                            ut.setId("fiidplazo");
+                            ut.setValue("fcnomplazo");
+                            ut.setJsa(response.getJSONArray("tbPlazo"));
+                            ut.FnFillDll();
+                            ArrayAdapter<String> adapter = new ArrayAdapter<String>(context, android.R.layout.simple_spinner_item,ut.getListdll());
+                            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                            spinnerTipoTasa.setAdapter(adapter);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // Handle error
+                    }
+                }){
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("Tabla", "tbPlazo");
+                return params;
             }
-            items = new String[MaxSize+1];
-            for(int i = 0; i < jsa.length(); i++){
-                JSONObject jso = jsa.getJSONObject(i);
-                items[jso.getInt("fiidplazo")] = jso.getString("fcnomplazo");
-            }
-        }catch(Exception ex){
-               Toast.makeText(context, ex.getMessage(), Toast.LENGTH_LONG);
-        }
-        return items;
+        };
+
+        // Add the request to the RequestQueue.
+        mRequestQueue.add(jsonObjectRequest);
     }
 
     @Override
