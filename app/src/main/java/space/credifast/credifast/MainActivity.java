@@ -16,6 +16,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -36,6 +37,8 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.JsonRequest;
 import com.android.volley.toolbox.StringRequest;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
@@ -78,7 +81,7 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         EditText editTextMonto = findViewById(R.id.txtMonto);
         EditText editTextTasa = findViewById(R.id.txtTasa);
-        Spinner spinnerTipoTasa = findViewById(R.id.ddlTipoTasa);
+        final Spinner spinnerTipoTasa = findViewById(R.id.ddlTipoTasa);
         EditText editTextPlazo = findViewById(R.id.txtPlazo);
         final TextView textViewMontoPago = findViewById(R.id.lblMontoPago);
         Button buttonMontoPago = findViewById(R.id.btnCalculaMontoPago);
@@ -116,6 +119,18 @@ public class MainActivity extends AppCompatActivity
                             @Override
                             public void onResponse(JSONObject response) {
                                 textViewMontoPago.setText(response.toString());
+                                try {
+                                    JSONArray arrayTb = response.getJSONArray("tbPlazo");
+                                    final String[] items = new String[arrayTb.length()];
+                                    for(int i = 1; i < arrayTb.length(); i++){
+                                        items[i] = arrayTb.getJSONObject(i).getString("fcnomplazo");
+                                    }
+                                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(context, android.R.layout.simple_spinner_item);
+                                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                                    spinnerTipoTasa.setAdapter(adapter);
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
                             }
                         },
                         new Response.ErrorListener() {
