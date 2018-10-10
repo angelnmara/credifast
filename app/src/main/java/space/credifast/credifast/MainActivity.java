@@ -92,6 +92,8 @@ public class MainActivity extends AppCompatActivity
 
         setSupportActionBar(toolbar);
 
+
+
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -120,12 +122,7 @@ public class MainActivity extends AppCompatActivity
                             public void onResponse(JSONObject response) {
                                 textViewMontoPago.setText(response.toString());
                                 try {
-                                    JSONArray arrayTb = response.getJSONArray("tbPlazo");
-                                    final String[] items = new String[arrayTb.length()];
-                                    for(int i = 1; i < arrayTb.length(); i++){
-                                        items[i] = arrayTb.getJSONObject(i).getString("fcnomplazo");
-                                    }
-                                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(context, android.R.layout.simple_spinner_item);
+                                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(context, android.R.layout.simple_spinner_item, fnFillDLL(response.getJSONArray("tbPlazo")));
                                     adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                                     spinnerTipoTasa.setAdapter(adapter);
                                 } catch (JSONException e) {
@@ -174,6 +171,25 @@ public class MainActivity extends AppCompatActivity
             tvName.setText(cuFB.getFbName());
         }
 
+    }
+
+    public String[] fnFillDLL(JSONArray jsa) throws JSONException {
+        Integer MaxSize = 0;
+        String[] items = null;
+        try{
+            for(int i = 0; i < jsa.length(); i++){
+                JSONObject jso = jsa.getJSONObject(i);
+                MaxSize = (MaxSize < jso.getInt("fiidplazo"))?jso.getInt("fiidplazo"):MaxSize;
+            }
+            items = new String[MaxSize+1];
+            for(int i = 0; i < jsa.length(); i++){
+                JSONObject jso = jsa.getJSONObject(i);
+                items[jso.getInt("fiidplazo")] = jso.getString("fcnomplazo");
+            }
+        }catch(Exception ex){
+               Toast.makeText(context, ex.getMessage(), Toast.LENGTH_LONG);
+        }
+        return items;
     }
 
     @Override
