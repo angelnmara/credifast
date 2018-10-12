@@ -40,7 +40,7 @@
 
     <string name="APIipage">http://credifast.space/lamarrullaAPI/</string>
     <string name="API">http://192.168.1.5/lamarrullaAPI/</string>
-    <string name="apiJava">http://35.196.45.197:8080/lamarrullaWS/rest/%s</string>
+    <string name="apiJava">http://35.196.98.36:8080/lamarrullaWS/rest/%s</string>
     <string name="lamarrullaAPI">lamarrullaAPI</string>
 
     <string name="login">login</string>
