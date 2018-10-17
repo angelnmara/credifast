@@ -3,7 +3,6 @@ package space.credifast.credifast;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Debug;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
@@ -35,13 +34,19 @@ import com.android.volley.toolbox.BasicNetwork;
 import com.android.volley.toolbox.DiskBasedCache;
 import com.android.volley.toolbox.HurlStack;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Type;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import space.credifast.credifast.clases.cAmortiza;
 import space.credifast.credifast.clases.cFacebook;
 import space.credifast.credifast.clases.cHoras;
 import space.credifast.credifast.clases.cPeliculas;
@@ -181,15 +186,16 @@ public class MainActivity extends AppCompatActivity
                     new Response.Listener<JSONObject>() {
                         @Override
                         public void onResponse(JSONObject response) {
-                            //textViewMontoPago.setText(response.toString());
-                            Toast.makeText(context, response.toString(), Toast.LENGTH_LONG).show();
-                                /*ut.setId("fiidplazo");
-                                ut.setValue("fcnomplazo");
-                                ut.setJsa(response.getJSONArray("tbPlazo"));
-                                ut.FnFillDll();
-                                ArrayAdapter<String> adapter = new ArrayAdapter<String>(context, android.R.layout.simple_spinner_item,ut.getListdll());
-                                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                                spinnerTipoTasa.setAdapter(adapter);*/
+                            try{
+                                Gson gson = new Gson();
+                                JSONArray jsa = new JSONArray();
+                                jsa = response.getJSONArray("tbAmortiza");
+                                Type listType = new TypeToken<List<cAmortiza>>(){}.getType();
+                                List<cAmortiza> amortiza = gson.fromJson(jsa.toString(), listType);
+                                Toast.makeText(context, response.toString(), Toast.LENGTH_LONG).show();
+                            }catch (Exception ex){
+                                Toast.makeText(context, ex.getMessage(), Toast.LENGTH_LONG).show();
+                            }
                         }
                     },
                     new Response.ErrorListener() {
