@@ -3,6 +3,7 @@ package space.credifast.credifast;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Debug;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
@@ -82,6 +83,11 @@ public class MainActivity extends AppCompatActivity
     EditText editTextPlazo;
     TextView textViewMontoPago;
     Button buttonMontoPago;
+    Button buttonTabla;
+
+    String textMonto;
+    String textPlazo;
+    String textTasa;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,6 +100,7 @@ public class MainActivity extends AppCompatActivity
         editTextPlazo = findViewById(R.id.txtPlazo);
         textViewMontoPago = findViewById(R.id.lblMontoPago);
         buttonMontoPago = findViewById(R.id.btnCalculaMontoPago);
+        buttonTabla = findViewById(R.id.btnGeneraTabla);
 
         editTextMonto.setHint(R.string.monto);
         editTextPlazo.setHint(R.string.plazo);
@@ -110,31 +117,14 @@ public class MainActivity extends AppCompatActivity
         buttonMontoPago.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                try{
-                    String textMonto = editTextMonto.getText().toString();
-                    String textPlazo = editTextPlazo.getText().toString();
-                    String textTasa = editTextTasa.getText().toString();
-                    if(textMonto==null || textMonto.isEmpty()){
-                        Toast.makeText(context, "Monto no puede ser vacio", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-                    if(textTasa==null||textTasa.isEmpty()){
-                        Toast.makeText(context, "Tasa no puede ser vacio", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-                    if(textPlazo==null || textPlazo.isEmpty()){
-                        Toast.makeText(context, "Plazo no puede ser vacio", Toast.LENGTH_LONG).show();
-                        return;
-                    }
-                    mp.MontoTotal = Double.parseDouble(textMonto);
-                    mp.Plazo = Integer.valueOf(textPlazo);
-                    mp.Tasa = Double.parseDouble(textTasa);
-                    mp.TipoTaza = ut.getListMap().get(spinnerTipoTasa.getSelectedItemPosition());
-                    mp.calculaMontoPago();
-                    textViewMontoPago.setText(String.valueOf(mp.getMontoPago()));
-                }catch (Exception ex){
-                    Toast.makeText(context, "Error generico", Toast.LENGTH_LONG).show();
-                }
+                calculaPago();
+            }
+        });
+
+        buttonTabla.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                generaTabla();
             }
         });
 
@@ -171,6 +161,96 @@ public class MainActivity extends AppCompatActivity
 
     }
 
+    public void generaTabla(){
+        if(calculaPago()){
+            Cache cache = new DiskBasedCache(getCacheDir(), 1024 * 1024); // 1MB cap
+
+            // Set up the network to use HttpURLConnection as the HTTP client.
+            Network network = new BasicNetwork(new HurlStack());
+
+            // Instantiate the RequestQueue with the cache and network.
+            mRequestQueue = new RequestQueue(cache, network);
+
+            // Start the queue
+            mRequestQueue.start();
+
+            String url = String.format(getString(R.string.apiJava), getString(R.string.TablaAmoritza));
+
+            // Formulate the request and handle the response.
+            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url,null,
+                    new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            //textViewMontoPago.setText(response.toString());
+                            Toast.makeText(context, response.toString(), Toast.LENGTH_LONG).show();
+                                /*ut.setId("fiidplazo");
+                                ut.setValue("fcnomplazo");
+                                ut.setJsa(response.getJSONArray("tbPlazo"));
+                                ut.FnFillDll();
+                                ArrayAdapter<String> adapter = new ArrayAdapter<String>(context, android.R.layout.simple_spinner_item,ut.getListdll());
+                                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                                spinnerTipoTasa.setAdapter(adapter);*/
+                        }
+                    },
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            Toast.makeText(context, error.getMessage(), Toast.LENGTH_LONG).show();
+                        }
+                    }){
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    Map<String, String> params = new HashMap<String, String>();
+                    params.put("monto", String.valueOf(mp.getMontoPago()));
+                    params.put("tasa", String.valueOf(mp.getTasa()));
+                    params.put("plazo", String.valueOf(mp.getPlazo()));
+                    params.put("tipoTasa", String.valueOf(mp.getTipoTaza()));
+                    return params;
+                }
+            };
+
+            // Add the request to the RequestQueue.
+            mRequestQueue.add(jsonObjectRequest);
+        }
+        //Toast.makeText(context, "generaTabla", Toast.LENGTH_LONG).show();
+    }
+
+    public boolean calculaPago(){
+        try{
+            if(!validaCampos()){
+                return false;
+            }
+            mp.MontoTotal = Double.parseDouble(textMonto);
+            mp.Plazo = Integer.valueOf(textPlazo);
+            mp.Tasa = Double.parseDouble(textTasa);
+            mp.TipoTaza = ut.getListMap().get(spinnerTipoTasa.getSelectedItemPosition());
+            mp.calculaMontoPago();
+            textViewMontoPago.setText(String.valueOf(mp.getMontoPago()));
+            return true;
+        }catch (Exception ex){
+            Toast.makeText(context, "Error generico", Toast.LENGTH_LONG).show();
+            return false;
+        }
+    }
+
+    private boolean validaCampos(){
+        textMonto = editTextMonto.getText().toString();
+        textPlazo = editTextPlazo.getText().toString();
+        textTasa = editTextTasa.getText().toString();
+        if(textMonto==null || textMonto.isEmpty()){
+            Toast.makeText(context, "Monto no puede ser vacio", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if(textTasa==null||textTasa.isEmpty()){
+            Toast.makeText(context, "Tasa no puede ser vacio", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if(textPlazo==null || textPlazo.isEmpty()){
+            Toast.makeText(context, "Plazo no puede ser vacio", Toast.LENGTH_LONG).show();
+            return false;
+        }
+        return true;
+    }
     public void fillDDL(){
         // Instantiate the cache
         Cache cache = new DiskBasedCache(getCacheDir(), 1024 * 1024); // 1MB cap
