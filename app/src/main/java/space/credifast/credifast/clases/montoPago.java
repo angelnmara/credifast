@@ -48,29 +48,29 @@ public class montoPago {
     }
 
     public void calculaMontoPago(){
-        Tasa = Tasa/100;
         double TasaMensual = RegresaTasa();
         double PlazoD = Plazo;
         MontoPago = (TasaMensual / (1 - Math.pow((1+TasaMensual), (-1*PlazoD)))) * MontoTotal;
     }
 
     public Double RegresaTasa(){
+        double TasaI = Tasa/100;
         Double RegresaTasa = 0.0;
         switch(TipoTaza){
             case 1:
-                RegresaTasa = (Tasa * ((360/7)/12));
+                RegresaTasa = (TasaI * ((360/7)/12));
                 break;
             case 2:
-                RegresaTasa = (Tasa * (((360/7)/12)/2));
+                RegresaTasa = (TasaI * (((360/7)/12)/2));
                 break;
             case 3:
-                RegresaTasa = Tasa;
+                RegresaTasa = TasaI;
                 break;
             case 4:
-                RegresaTasa = (Tasa/12);
+                RegresaTasa = (TasaI/12);
                 break;
                 default:
-                    RegresaTasa = Tasa;
+                    RegresaTasa = TasaI;
                     break;
         }
         return RegresaTasa;

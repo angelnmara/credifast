@@ -1,6 +1,9 @@
 package space.credifast.credifast.clases;
 
-public class cAmortiza {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class cAmortiza implements Parcelable {
     private double fdpagoamortiza;
     private double fdcapitalpagadoamortiza;
     private int fiidusutabla;
@@ -68,5 +71,20 @@ public class cAmortiza {
 
     public void setFinumpagoamortiza(int finumpagoamortiza) {
         this.finumpagoamortiza = finumpagoamortiza;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeDouble(fdpagoamortiza);
+        parcel.writeDouble(fdcapitalpagadoamortiza);
+        parcel.writeInt(fiidusutabla);
+        parcel.writeDouble(fdinteresespagadosamortiza);
+        parcel.writeDouble(fdmontoprestamoamortiza);
+        parcel.writeInt(finumpagoamortiza);
     }
 }

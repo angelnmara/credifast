@@ -34,16 +34,10 @@ import com.android.volley.toolbox.BasicNetwork;
 import com.android.volley.toolbox.DiskBasedCache;
 import com.android.volley.toolbox.HurlStack;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.lang.reflect.Type;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import space.credifast.credifast.clases.cAmortiza;
@@ -59,6 +53,7 @@ import space.credifast.credifast.fragments.HorariosFragment;
 import space.credifast.credifast.fragments.PeliculasFragment;
 import space.credifast.credifast.fragments.FacebookFragment;
 import space.credifast.credifast.fragments.SucursalFragment;
+import space.credifast.credifast.fragments.TablaAmortizaFragment;
 
 import static space.credifast.credifast.clases.cTokenSaver.getIdPelicula;
 import static space.credifast.credifast.clases.cTokenSaver.getIdSucursal;
@@ -69,15 +64,14 @@ public class MainActivity extends AppCompatActivity
         FacebookFragment.OnFragmentInteractionListener,
         PeliculasFragment.OnListFragmentInteractionListener,
         SucursalFragment.OnListFragmentInteractionListener,
-        HorariosFragment.OnListFragmentInteractionListener{
+        HorariosFragment.OnListFragmentInteractionListener,
+        TablaAmortizaFragment.OnListFragmentInteractionListener{
 
     private FragmentManager fm = getSupportFragmentManager();
 
     TextView tvEmail;
     TextView tvName;
     Context context = this;
-
-    RequestQueue mRequestQueue;
 
     Utilerias ut = new Utilerias();
     montoPago mp = new montoPago();
@@ -93,6 +87,10 @@ public class MainActivity extends AppCompatActivity
     String textMonto;
     String textPlazo;
     String textTasa;
+
+    //RecyclerView recyclerView;
+
+    RequestQueue mRequestQueue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -168,55 +166,13 @@ public class MainActivity extends AppCompatActivity
 
     public void generaTabla(){
         if(calculaPago()){
-            Cache cache = new DiskBasedCache(getCacheDir(), 1024 * 1024); // 1MB cap
+            try{
+                TablaAmortizaFragment taf = TablaAmortizaFragment.newInstance(1, mp.getMontoTotal(), mp.getTasa(), mp.getPlazo(), mp.getTipoTaza());
+                fm.beginTransaction().replace(R.id.lnlPrincipal, taf, "TablaAmortizaFragment").addToBackStack("TablaAmortizaFragment").commit();
+            }catch (Exception ex) {
+                Toast.makeText(context, ex.getMessage(), Toast.LENGTH_LONG).show();
+            }
 
-            // Set up the network to use HttpURLConnection as the HTTP client.
-            Network network = new BasicNetwork(new HurlStack());
-
-            // Instantiate the RequestQueue with the cache and network.
-            mRequestQueue = new RequestQueue(cache, network);
-
-            // Start the queue
-            mRequestQueue.start();
-
-            String url = String.format(getString(R.string.apiJava), getString(R.string.TablaAmoritza));
-
-            // Formulate the request and handle the response.
-            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url,null,
-                    new Response.Listener<JSONObject>() {
-                        @Override
-                        public void onResponse(JSONObject response) {
-                            try{
-                                Gson gson = new Gson();
-                                JSONArray jsa = new JSONArray();
-                                jsa = response.getJSONArray("tbAmortiza");
-                                Type listType = new TypeToken<List<cAmortiza>>(){}.getType();
-                                List<cAmortiza> amortiza = gson.fromJson(jsa.toString(), listType);
-                                Toast.makeText(context, response.toString(), Toast.LENGTH_LONG).show();
-                            }catch (Exception ex){
-                                Toast.makeText(context, ex.getMessage(), Toast.LENGTH_LONG).show();
-                            }
-                        }
-                    },
-                    new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            Toast.makeText(context, error.getMessage(), Toast.LENGTH_LONG).show();
-                        }
-                    }){
-                @Override
-                public Map<String, String> getHeaders() throws AuthFailureError {
-                    Map<String, String> params = new HashMap<String, String>();
-                    params.put("monto", String.valueOf(mp.getMontoPago()));
-                    params.put("tasa", String.valueOf(mp.getTasa()));
-                    params.put("plazo", String.valueOf(mp.getPlazo()));
-                    params.put("tipoTasa", String.valueOf(mp.getTipoTaza()));
-                    return params;
-                }
-            };
-
-            // Add the request to the RequestQueue.
-            mRequestQueue.add(jsonObjectRequest);
         }
         //Toast.makeText(context, "generaTabla", Toast.LENGTH_LONG).show();
     }
@@ -395,5 +351,10 @@ public class MainActivity extends AppCompatActivity
         int mIdSucursal = getIdSucursal(context);
         ButacasFragment bf = ButacasFragment.newInstance(0, mIdPelicula, mIdSucursal, item.getIdSala(), item.getIdHora());
         fm.beginTransaction().replace(R.id.lnlPrincipal, bf, "ButacasFragment").addToBackStack("ButacasFragment").commit();
+    }
+
+    @Override
+    public void onListFragmentInteraction(cAmortiza item) {
+        Toast.makeText(context, item.getFiidusutabla(), Toast.LENGTH_LONG).show();
     }
 }
