@@ -66,38 +66,43 @@
             android:orientation="horizontal">
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Mensualidad"
+                android:text="No Pago"
+                android:textAlignment="center"
                 android:textAppearance="?attr/textAppearanceListItem" />
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Pago"
+                android:textAlignment="center"
+                android:text="Monto Pago"
                 android:textAppearance="?attr/textAppearanceListItem" />
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textAlignment="center"
                 android:layout_weight="1"
-                android:text="Capital"
+                android:text="Monto Capital"
                 android:textAppearance="?attr/textAppearanceListItem" />
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Interes"
+                android:textAlignment="center"
+                android:text="Monto Interes"
                 android:textAppearance="?attr/textAppearanceListItem" />
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Saldo Insoluto"
+                android:textAlignment="center"
                 android:textAppearance="?attr/textAppearanceListItem" />
         </LinearLayout>
 
